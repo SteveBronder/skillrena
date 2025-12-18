@@ -14,3 +14,23 @@ I have a script to help with that:
 # If you want to remove them
 # ./scripts/remove_skills.sh
 ```
+
+All skills for this project end with `-skl` to avoid conflicts with other skills.
+
+When you first start working on a new project, run:
+
+```bash
+$activate-skl
+```
+
+This will tell the agent to check if onboarding has been performed, and if not, it will run onboarding to create memories about the project.
+
+After that, you can switch modes as needed. For example, to switch to editing mode, run:
+
+```bash
+$switch_modes-skl planning
+```
+
+This will set the active mode to `planning`, which is suitable for analysis and planning tasks.
+
+This is a new project, so please report any issues or suggestions on [GitHub](https://github.com/SteveBronder/skillrena/issues/new).
