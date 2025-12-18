@@ -3,8 +3,6 @@ name: think_about_collected_information-skl
 description: Quick checkpoint; do we have enough info to proceed?
 ---
 
-# Skillrena: think_about_collected_information
-
 Answer briefly:
 - What’s still unknown?
 - Can we get it via `rg`/targeted reads?

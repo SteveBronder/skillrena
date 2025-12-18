@@ -3,8 +3,6 @@ name: execute_shell_command-skl
 description: Run a short, safe shell command and return its output.
 ---
 
-# Skillrena: execute_shell_command
-
 - Only run short, non-interactive commands.
 - Avoid destructive commands unless explicitly requested.
 - Prefer repo root as `cwd`; validate `cwd` exists.

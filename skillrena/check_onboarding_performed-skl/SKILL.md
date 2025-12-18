@@ -3,8 +3,6 @@ name: check_onboarding_performed-skl
 description: Check whether `.skillrena/memories/` exists and is non-empty.
 ---
 
-# Skillrena: check_onboarding_performed
-
-Check `.skillrena/memories/`:
-- If missing/empty: respond “Onboarding not performed; run `onboarding-skl`.”
-- Else: return JSON list of memory basenames (no `.md`).
+Check `.skillrena/memories/` and return JSON only:
+- If missing/empty: `{ "onboarded": false, "memories": [] }`
+- Else: `{ "onboarded": true, "memories": [...] }` (basenames, no `.md`, sorted)

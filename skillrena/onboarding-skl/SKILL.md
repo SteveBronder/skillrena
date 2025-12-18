@@ -3,8 +3,6 @@ name: onboarding-skl
 description: Create baseline project memories under `.skillrena/memories/`.
 ---
 
-# Skillrena: onboarding
-
 Goal: write short memories in `.skillrena/memories/`:
 - `project_overview.md`
   - A high level overview of the project purpose, goals, and main components.
