@@ -1,6 +1,6 @@
 ---
 name: write_memory-skl
-description: Write `.skillrena/memories/<name>.md` (normalize `.md` suffix).
+description: Write `.skillrena/memories/<name>.md`
 ---
 
 Input: `memory_file_name`, `content`.
