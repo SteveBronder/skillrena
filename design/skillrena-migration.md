@@ -66,7 +66,7 @@ This repository currently contains one folder per Serena tool call we use (e.g. 
 
 Skillrena is not an MCP server. It is:
 
-1. A **set of Codex CLI skills** (new `skillrena-*` folders) that replace `serena-*` usage.
+1. A **set of Codex CLI skills** (new `*-skl` folders) that replace `serena-*` usage.
 2. A **local implementation layer** used by those skills, which can be either:
    - **A small CLI/utility package** (`skillrena`) invoked via shell commands, or
    - A “pure-skill” approach that uses Codex built-ins (`rg`, file edits) directly.
@@ -149,7 +149,7 @@ This section sketches the Skillrena replacement for each Serena MCP tool call cu
 
 Conventions:
 - Serena tool names shown without the `serena-` prefix (e.g. `find_symbol`).
-- New skill folders will be named `skillrena-<tool_name>`.
+- New skill folders will be named `<tool_name>-skl`.
 - For each tool we define:
   - **Skill name**
   - **Implementation** (pure skill vs `skillrena` CLI)
@@ -159,25 +159,25 @@ Conventions:
 
 These can be implemented as skills that use tools we already have (`rg`, `ls`, `mkdir`, and Codex file editing via `apply_patch`, plus reading/writing files).
 
-- Project workflow/prompting: `skillrena-initial_instructions`, `skillrena-check_onboarding_performed`, `skillrena-onboarding`, `skillrena-think_about_collected_information`, `skillrena-think_about_task_adherence`, `skillrena-think_about_whether_you_are_done`, `skillrena-summarize_changes`, `skillrena-prepare_for_new_conversation`
-- “Mode” prompt-state: `skillrena-switch_modes`
-- Files + search: `skillrena-list_dir`, `skillrena-find_file`, `skillrena-read_file`, `skillrena-create_text_file`, `skillrena-delete_lines`, `skillrena-replace_lines`, `skillrena-insert_at_line`, `skillrena-search_for_pattern`
-- Memories: `skillrena-write_memory`, `skillrena-read_memory`, `skillrena-list_memories`, `skillrena-delete_memory`
-- Shell execution (via Codex shell tool): `skillrena-execute_shell_command`
+- Project workflow/prompting: `initial_instructions-skl`, `check_onboarding_performed-skl`, `onboarding-skl`, `think_about_collected_information-skl`, `think_about_task_adherence-skl`, `think_about_whether_you_are_done-skl`, `summarize_changes-skl`, `prepare_for_new_conversation-skl`
+- “Mode” prompt-state: `switch_modes-skl`
+- Files + search: `list_dir-skl`, `find_file-skl`, `read_file-skl`, `create_text_file-skl`, `delete_lines-skl`, `replace_lines-skl`, `insert_at_line-skl`, `search_for_pattern-skl`
+- Memories: `write_memory-skl`, `read_memory-skl`, `list_memories-skl`, `delete_memory-skl`
+- Shell execution (via Codex shell tool): `execute_shell_command-skl`
 
 ### Skills that need a `skillrena` CLI for parity
 
 These require a real implementation to be safe/deterministic (semantic LSP-backed operations, multi-file refactors, structured caches/state, and robust regex editing).
 
-- Project activation/registry/state: `skillrena-activate_project`, `skillrena-get_current_config`, `skillrena-remove_project`, `skillrena-restart_language_server`
-- Robust regex editing: `skillrena-replace_content`, `skillrena-edit_memory`
-- Semantic symbol tooling: `skillrena-get_symbols_overview`, `skillrena-find_symbol`, `skillrena-find_referencing_symbols`, `skillrena-replace_symbol_body`, `skillrena-insert_after_symbol`, `skillrena-insert_before_symbol`, `skillrena-rename_symbol`
-- Optional JetBrains integration: `skillrena-jet_brains_find_symbol`, `skillrena-jet_brains_find_referencing_symbols`
+- Project activation/registry/state: `activate_project-skl`, `get_current_config-skl`, `remove_project-skl`, `restart_language_server-skl`
+- Robust regex editing: `replace_content-skl`, `edit_memory-skl`
+- Semantic symbol tooling: `get_symbols_overview-skl`, `find_symbol-skl`, `find_referencing_symbols-skl`, `replace_symbol_body-skl`, `insert_after_symbol-skl`, `insert_before_symbol-skl`, `rename_symbol-skl`
+- Optional JetBrains integration: `jet_brains_find_symbol-skl`, `jet_brains_find_referencing_symbols-skl`
 
 ### Configuration / lifecycle tools
 
 #### `activate_project`
-- Skill: `skillrena-activate_project`
+- Skill: `activate_project-skl`
 - Implementation: `skillrena` CLI (recommended) or pure-skill with minimal persistence
 - Behavior:
   - Resolve `project` as either:
@@ -190,14 +190,14 @@ These require a real implementation to be safe/deterministic (semantic LSP-backe
   - Serena starts language servers lazily; Skillrena should not necessarily start anything at activation.
 
 #### `get_current_config`
-- Skill: `skillrena-get_current_config`
+- Skill: `get_current_config-skl`
 - Implementation: `skillrena` CLI
 - Output:
   - Active project root, languages/backends available, ignore settings, and enabled “modes”.
   - Optionally list registered projects (global config).
 
 #### `switch_modes`
-- Skill: `skillrena-switch_modes`
+- Skill: `switch_modes-skl`
 - Implementation: pure-skill + `.skillrena/state.json`
 - Behavior:
   - “Modes” are primarily prompt-level behavior. Skillrena stores active modes in `.skillrena/state.json` and prints the mode prompts.
@@ -205,14 +205,14 @@ These require a real implementation to be safe/deterministic (semantic LSP-backe
   - Serena uses modes to change which tools are active; Skillrena’s equivalent is “skills discipline” + stored state.
 
 #### `remove_project`
-- Skill: `skillrena-remove_project`
+- Skill: `remove_project-skl`
 - Implementation: `skillrena` CLI
 - Behavior:
   - Removes project from `~/.skillrena/config.yml` (global registry).
   - Does not delete repo-local `.skillrena/` unless explicitly requested.
 
 #### `restart_language_server`
-- Skill: `skillrena-restart_language_server`
+- Skill: `restart_language_server-skl`
 - Implementation: backend-specific
 - Behavior:
   - If using LSP backend with long-lived processes: restart the LSP session(s) and clear `.skillrena/cache/lsp/*`.
@@ -225,7 +225,7 @@ These require a real implementation to be safe/deterministic (semantic LSP-backe
 These tools can be implemented without Serena using standard file operations + `rg` (or Python regex fallback).
 
 #### `list_dir`
-- Skill: `skillrena-list_dir`
+- Skill: `list_dir-skl`
 - Implementation: pure-skill or `skillrena` CLI
 - Behavior:
   - List dirs/files under a relative path
@@ -233,54 +233,54 @@ These tools can be implemented without Serena using standard file operations + `
   - Return JSON `{ "dirs": [...], "files": [...] }`
 
 #### `find_file`
-- Skill: `skillrena-find_file`
+- Skill: `find_file-skl`
 - Implementation: pure-skill or `skillrena` CLI
 - Behavior:
   - Glob match in-tree, skipping ignored
   - Return JSON `{ "files": [...] }`
 
 #### `read_file`
-- Skill: `skillrena-read_file`
+- Skill: `read_file-skl`
 - Implementation: pure-skill or `skillrena` CLI
 - Behavior:
   - Read a file chunk by line range (`start_line`, `end_line`)
   - Enforce “path must be within repo” and optionally “not ignored”
 
 #### `create_text_file`
-- Skill: `skillrena-create_text_file`
+- Skill: `create_text_file-skl`
 - Implementation: pure-skill (`apply_patch` in Codex) or `skillrena` CLI
 - Behavior:
   - Create/overwrite file content
   - Enforce “inside repo” safety checks
 
 #### `replace_content`
-- Skill: `skillrena-replace_content`
+- Skill: `replace_content-skl`
 - Implementation: `skillrena` CLI recommended (safer); pure-skill possible with careful prompting
 - Behavior:
   - Literal or regex replace, optional multiple occurrences
   - Same semantics as Serena’s `ReplaceContentTool` (`serena/src/serena/tools/file_tools.py`)
 
 #### `delete_lines`
-- Skill: `skillrena-delete_lines`
+- Skill: `delete_lines-skl`
 - Implementation: pure-skill or `skillrena` CLI
 - Behavior:
   - Delete inclusive line range
   - In Skillrena, require pre-read verification (same “safety” guidance Serena uses)
 
 #### `replace_lines`
-- Skill: `skillrena-replace_lines`
+- Skill: `replace_lines-skl`
 - Implementation: pure-skill or `skillrena` CLI
 - Behavior:
   - Replace inclusive line range with new content (ensure trailing newline)
 
 #### `insert_at_line`
-- Skill: `skillrena-insert_at_line`
+- Skill: `insert_at_line-skl`
 - Implementation: pure-skill or `skillrena` CLI
 - Behavior:
   - Insert content at line, pushing existing down
 
 #### `search_for_pattern`
-- Skill: `skillrena-search_for_pattern`
+- Skill: `search_for_pattern-skl`
 - Implementation: pure-skill (via `rg`) or `skillrena` CLI
 - Behavior:
   - Regex substring search across files with include/exclude globs and context lines
@@ -293,27 +293,27 @@ These tools can be implemented without Serena using standard file operations + `
 Skillrena reuses Serena’s core idea: memories are markdown files stored in the repo.
 
 #### `write_memory`
-- Skill: `skillrena-write_memory`
+- Skill: `write_memory-skl`
 - Implementation: pure-skill (`apply_patch`) or `skillrena` CLI
 - Behavior:
   - Write `.skillrena/memories/<name>.md` (normalize `.md` suffix)
 
 #### `read_memory`
-- Skill: `skillrena-read_memory`
+- Skill: `read_memory-skl`
 - Implementation: pure-skill or `skillrena` CLI
 
 #### `list_memories`
-- Skill: `skillrena-list_memories`
+- Skill: `list_memories-skl`
 - Implementation: pure-skill or `skillrena` CLI
 
 #### `delete_memory`
-- Skill: `skillrena-delete_memory`
+- Skill: `delete_memory-skl`
 - Implementation: pure-skill or `skillrena` CLI
 - Behavior:
   - Only delete on explicit user request (same policy as Serena)
 
 #### `edit_memory`
-- Skill: `skillrena-edit_memory`
+- Skill: `edit_memory-skl`
 - Implementation: `skillrena` CLI (safer)
 - Behavior:
   - Regex/literal replacement within a memory file (equivalent to “replace_content but allow ignored”)
@@ -325,31 +325,31 @@ Skillrena reuses Serena’s core idea: memories are markdown files stored in the
 These are essentially prompt templates; Serena returns prompt strings from `PromptFactory` (see `serena/src/serena/tools/workflow_tools.py`). Skillrena can implement these as static skills.
 
 #### `initial_instructions`
-- Skill: `skillrena-initial_instructions`
+- Skill: `initial_instructions-skl`
 - Implementation: pure-skill
 
 #### `check_onboarding_performed`
-- Skill: `skillrena-check_onboarding_performed`
+- Skill: `check_onboarding_performed-skl`
 - Implementation: pure-skill or `skillrena` CLI
 - Behavior:
   - If `.skillrena/memories/` is empty → instruct to run onboarding
 
 #### `onboarding`
-- Skill: `skillrena-onboarding`
+- Skill: `onboarding-skl`
 - Implementation: pure-skill
 - Behavior:
   - Provide onboarding checklist and ask the agent to write `suggested_commands.md`, etc.
 
 #### `think_about_collected_information`, `think_about_task_adherence`, `think_about_whether_you_are_done`
-- Skills: `skillrena-think_about_collected_information`, etc.
+- Skills: `think_about_collected_information-skl`, etc.
 - Implementation: pure-skill
 
 #### `summarize_changes`
-- Skill: `skillrena-summarize_changes`
+- Skill: `summarize_changes-skl`
 - Implementation: pure-skill
 
 #### `prepare_for_new_conversation`
-- Skill: `skillrena-prepare_for_new_conversation`
+- Skill: `prepare_for_new_conversation-skl`
 - Implementation: pure-skill
 
 ---
@@ -366,7 +366,7 @@ To get “close enough” parity, Skillrena should implement a semantic engine t
 Recommended approach: implement an LSP-backed backend first for the languages we care about (e.g. Python/TypeScript), and add tree-sitter fallback.
 
 #### `get_symbols_overview`
-- Skill: `skillrena-get_symbols_overview`
+- Skill: `get_symbols_overview-skl`
 - Implementation: `skillrena` CLI (semantic backend)
 - Inputs: `relative_path`, `depth`, `max_answer_chars`
 - Output: JSON list of top-level symbol dicts (keep Serena-like structure for compatibility)
@@ -376,7 +376,7 @@ Recommended approach: implement an LSP-backed backend first for the languages we
   3. Return sanitized dicts (similar to Serena’s `_sanitize_symbol_dict`)
 
 #### `find_symbol`
-- Skill: `skillrena-find_symbol`
+- Skill: `find_symbol-skl`
 - Implementation: `skillrena` CLI (semantic backend)
 - Inputs: same as Serena (`name_path_pattern`, `depth`, `relative_path`, `include_body`, `include_kinds`, `exclude_kinds`, `substring_matching`, `max_answer_chars`)
 - Output: JSON list of symbols with locations and optional body
@@ -385,7 +385,7 @@ Recommended approach: implement an LSP-backed backend first for the languages we
   - Name path matching rules should be compatible with `serena/src/serena/tools/symbol_tools.py`.
 
 #### `find_referencing_symbols`
-- Skill: `skillrena-find_referencing_symbols`
+- Skill: `find_referencing_symbols-skl`
 - Implementation: `skillrena` CLI (semantic backend)
 - Inputs: `name_path`, `relative_path` (file), `include_kinds`, `exclude_kinds`
 - Output: JSON list of referencing symbol dicts plus `content_around_reference` (Serena adds 1 line before/after).
@@ -394,7 +394,7 @@ Recommended approach: implement an LSP-backed backend first for the languages we
   - Tree-sitter fallback: identifier search + heuristic mapping to containing node.
 
 #### `replace_symbol_body`
-- Skill: `skillrena-replace_symbol_body`
+- Skill: `replace_symbol_body-skl`
 - Implementation: `skillrena` CLI (semantic backend + edit engine)
 - Behavior:
   1. Resolve a unique symbol by `name_path` in `relative_path`.
@@ -405,14 +405,14 @@ Recommended approach: implement an LSP-backed backend first for the languages we
   - For Python, the “body” concept matches `def ...:` + indented block.
 
 #### `insert_after_symbol` / `insert_before_symbol`
-- Skills: `skillrena-insert_after_symbol`, `skillrena-insert_before_symbol`
+- Skills: `insert_after_symbol-skl`, `insert_before_symbol-skl`
 - Implementation: `skillrena` CLI (semantic backend + edit engine)
 - Behavior:
   - Find unique symbol, then insert content after its end or before its start.
   - Preserve/normalize newline counts (Serena counts leading/trailing newlines in `CodeEditor`).
 
 #### `rename_symbol`
-- Skill: `skillrena-rename_symbol`
+- Skill: `rename_symbol-skl`
 - Implementation: `skillrena` CLI (semantic backend + edit engine)
 - Preferred behavior (parity):
   - Use LSP rename (`textDocument/rename`) to obtain workspace edits and apply them.
@@ -427,7 +427,7 @@ Recommended approach: implement an LSP-backed backend first for the languages we
 ### Shell tool
 
 #### `execute_shell_command`
-- Skill: `skillrena-execute_shell_command`
+- Skill: `execute_shell_command-skl`
 - Implementation: pure-skill (Codex shell tool) with safety checklist
 - Notes:
   - Keep Serena’s guardrails: no long-running processes, no interactive commands, avoid unsafe/dangerous commands unless explicitly requested.
@@ -443,8 +443,8 @@ Skillrena options:
 2. Re-implement the client in `skillrena` CLI (still “without Serena”).
 
 Mappings:
-- `jet_brains_find_symbol` → `skillrena-jet_brains_find_symbol`
-- `jet_brains_find_referencing_symbols` → `skillrena-jet_brains_find_referencing_symbols`
+- `jet_brains_find_symbol` → `jet_brains_find_symbol-skl`
+- `jet_brains_find_referencing_symbols` → `jet_brains_find_referencing_symbols-skl`
 
 ---
 
@@ -453,7 +453,7 @@ Mappings:
 ### Phase 0 — Documentation + scaffolding
 - Add this design doc.
 - Add `.skillrena/` spec and ignore rules (e.g., update `.gitignore` guidance).
-- Create new `skillrena-*` skill folders mirroring the existing `serena-*` catalog.
+- Create new `*-skl` skill folders mirroring the existing `serena-*` catalog.
 
 ### Phase 1 — Non-semantic parity (fast wins)
 Implement the file/search/memory/workflow skills without Serena:
@@ -473,7 +473,7 @@ Target the languages we most need (e.g. Python and TypeScript):
 - Add tests for symbol range edits and rename correctness (snapshot tests similar in spirit to Serena’s).
 
 ### Phase 5 — Deprecate Serena skills
-- Mark `serena-*` skills as deprecated, pointing to `skillrena-*`.
+- Mark `serena-*` skills as deprecated, pointing to `*-skl`.
 - Eventually remove Serena as a dependency from consuming systems.
 
 ---
@@ -498,4 +498,4 @@ Target the languages we most need (e.g. Python and TypeScript):
 
 1. `skillrena` CLI/package (separate repo or added alongside consuming codebase)
 2. `scripts/migrate-serena-to-skillrena` (renames `.serena` → `.skillrena`)
-3. `skillrena-*` skills (one folder per tool) replacing `serena-*`
+3. `*-skl` skills (one folder per tool) replacing `serena-*`
