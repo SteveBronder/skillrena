@@ -1,23 +1,10 @@
 ---
 name: switch_modes-skl
-description: Switch the agent's active mode.
+description: Switch agent mode.
 ---
 
-Input: `mode` (string) or `modes` (list of strings); common usage is `$switch_modes-skl <mode>`.
+Modes: `editing`, `interactive`, `no-memories`, `one-shot`, `planning`
 
-- Determine requested mode(s):
-  - If the user provided a single mode name, treat it as `mode`.
-  - If the user provided a list, treat it as `modes` and set `mode` to the first entry.
-- Supported modes (and their mode-skill names):
-  - `editing` -> `mode-editing-ski`
-  - `interactive` -> `mode-interactive-ski`
-  - `no-memories` -> `mode-no-memories-ski`
-  - `onboarding` -> `mode-onboarding-ski`
-  - `one-shot` -> `mode-one-shot-ski`
-  - `planning` -> `mode-planning-ski`
-- Ensure `.{AGENT_NAME}/` exists.
-- Write/overwrite `.{AGENT_NAME}/state.json` with:
-  - `{ "mode": "<mode>", "modes": ["<mode>", ...] }`
-- Reply with:
-  - A 1-line confirmation of the active mode, and
-  - A short list of available mode skills (the mapping above).
+Write `{ "mode": "<mode>" }` to `./.{AGENT_NAME}/state.json`.
+
+Confirm the active mode.
