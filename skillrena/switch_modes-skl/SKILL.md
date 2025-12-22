@@ -12,12 +12,11 @@ Input: `mode` (string) or `modes` (list of strings); common usage is `$switch_mo
   - `editing` -> `mode-editing-ski`
   - `interactive` -> `mode-interactive-ski`
   - `no-memories` -> `mode-no-memories-ski`
-  - `no-onboarding` -> `mode-no-onboarding-ski`
   - `onboarding` -> `mode-onboarding-ski`
   - `one-shot` -> `mode-one-shot-ski`
   - `planning` -> `mode-planning-ski`
-- Ensure `.skillrena/` exists.
-- Write/overwrite `.skillrena/state.json` with:
+- Ensure `.{AGENT_NAME}/` exists.
+- Write/overwrite `.{AGENT_NAME}/state.json` with:
   - `{ "mode": "<mode>", "modes": ["<mode>", ...] }`
 - Reply with:
   - A 1-line confirmation of the active mode, and

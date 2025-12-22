@@ -9,4 +9,10 @@ for d in ./skillrena/*/; do
     echo "Removing hardlink tree: $target_dir"
     rm -rf -- "$target_dir"
   fi
+  target_dir="$HOME/.claude/skills/skillrena/$skill_name"
+
+  if [ -d "$target_dir" ]; then
+    echo "Removing hardlink tree: $target_dir"
+    rm -rf -- "$target_dir"
+  fi
 done
