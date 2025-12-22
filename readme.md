@@ -2,20 +2,20 @@
 
 ![Skillrena Logo](./img/skillrena-logo.png)
 
-A lightweight skills-based system for AI coding agents. Like [Serena](https://github.com/codegate-ai/serena), but optimized for **minimal token usage** - no MCP servers, just focused markdown prompts.
+Like [Serena](https://github.com/codegate-ai/serena), but way fewer tokens. It mostly boils down to giving your AI coding agent project memory without burning half your context window on MCP server overhead.
 
-## Why Skillrena?
+## Why Though?
 
-Serena provides powerful project understanding through MCP servers, but that comes with token overhead. Skillrena achieves similar benefits with a fraction of the tokens:
+Serena is great - it gives agents deep project understanding through MCP servers. But that understanding costs tokens. A lot of tokens.
 
 | Approach | Token Cost | Setup |
 |----------|------------|-------|
 | Serena | ~50k+ tokens | MCP server required |
-| Skillrena | ~2.9k tokens (all skills) | Copy files, done |
+| Skillrena | ~2.9k tokens (all skills) | Copy some files, done |
 
-**Total skill overhead**: ~2,880 tokens for all 10 skills. Running `$activate-skl` to load project memories adds only ~9k tokens to your context.
+That's it. ~2,880 tokens for everything. Running `$activate-skl` to load your project memories adds about 9k more. Still leaves plenty of room for actual work.
 
-### Token Cost Breakdown
+### The Numbers
 
 ```
 Skills and slash commands · /skills
@@ -31,177 +31,129 @@ Skills and slash commands · /skills
 └ switch_modes-skl: 131 tokens
 ```
 
-### Context Before/After Activation
+### Before/After Activation
 
 ```
-> /context (before $activate-skl)
-    Context Usage
-   ⛁ ⛀ ⛁ ⛁ ⛁ ⛁ ⛁ ⛁ ⛁ ⛁   claude-opus-4-5-20251101 · 70k/200k tokens (35%)
-   ⛁ ⛀ ⛁ ⛀ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶
-   ...
-   ⛁ Messages: 345 tokens (0.2%)
+> /context
+  ⎿
+      Context Usage
+     ⛁ ⛀ ⛁ ⛁ ⛁ ⛁ ⛁ ⛁ ⛁ ⛁   claude-opus-4-5-20251101 · 70k/200k tokens (35%)
+     ⛁ ⛀ ⛁ ⛀ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶
+     ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ System prompt: 3.1k tokens (1.6%)
+     ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ System tools: 19.0k tokens (9.5%)
+     ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ Custom agents: 2.6k tokens (1.3%)
+     ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ Messages: 345 tokens (0.2%)
+     ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛶ Free space: 130k (65.0%)
+     ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛝ ⛝ ⛝   ⛝ Autocompact buffer: 45.0k tokens (22.5%)
+     ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝
+     ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝
 
 > $activate-skl
-> /context (after)
-    Context Usage
-   ⛁ ⛀ ⛁ ⛁ ⛁ ⛁ ⛁ ⛁ ⛁ ⛁   claude-opus-4-5-20251101 · 79k/200k tokens (39%)
-   ⛁ ⛀ ⛁ ⛁ ⛁ ⛁ ⛁ ⛶ ⛶ ⛶
-   ...
-   ⛁ Messages: 8.8k tokens (4.4%)
+> /context
+  ⎿
+      Context Usage
+     ⛁ ⛀ ⛁ ⛁ ⛁ ⛁ ⛁ ⛁ ⛁ ⛁   claude-opus-4-5-20251101 · 79k/200k tokens (39%)
+     ⛁ ⛀ ⛁ ⛁ ⛁ ⛁ ⛁ ⛶ ⛶ ⛶
+     ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ System prompt: 3.1k tokens (1.6%)
+     ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ System tools: 19.0k tokens (9.5%)
+     ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ Custom agents: 2.6k tokens (1.3%)
+     ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ Messages: 8.8k tokens (4.4%)
+     ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛶ Free space: 121k (60.7%)
+     ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛝ ⛝ ⛝   ⛝ Autocompact buffer: 45.0k tokens (22.5%)
+     ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝
+     ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝
 ```
 
-Only ~9k tokens added to load full project context - leaving plenty of room for actual work.
+So ~9k tokens and your agent knows everything about your project. Not bad, but not terrible.
 
-## Prerequisites
+## What You Need
 
-Skillrena currently works with:
-- **[Claude Code](https://docs.anthropic.com/en/docs/claude-code)** - Anthropic's CLI for Claude
-- **[Codex CLI](https://github.com/openai/codex)** - OpenAI's coding agent
+Right now this works with:
+- **[Claude Code](https://docs.anthropic.com/en/docs/claude-code)**
+- **[Codex CLI](https://github.com/openai/codex)**
 
-You need one of these installed before using Skillrena.
+Get one of those installed first.
 
 ## Installation
-
-Copy skills to your agent's config directory:
 
 ```bash
 ./scripts/cp_skills.sh
 ```
 
-This installs skills to both `~/.claude/skills/` and `~/.codex/skills/`.
+That copies skills to `~/.claude/skills/` and `~/.codex/skills/`.
 
-To remove:
+To remove the skills call the script below. This will delete all folders in `~/.{AGENT_NAME}/skills/memories`
 
 ```bash
 ./scripts/remove_skills.sh
 ```
 
-> **Note**: Codex does not support symlinks for skills, so hard copies are required.
+**NOTE**: Codex doesn't do symlinks, so we have to hard copy. :(
 
-## Quick Start
+## How To Use It
 
-### 1. Activate at Session Start
+### Start Every Session With This
 
-Run this at the start of every session:
+When entering a project, call `$activate-skl` to either have the agent write memory skills in `.{AGENT_NAME}/skills/memories` or to skim the memories if they already exist.
 
 ```
 $activate-skl
 ```
 
-This tells the agent to:
-1. Check for existing project memories in `.claude/skills/memories/` (or `.codex/skills/memories/`)
-2. If none exist, run onboarding to analyze your project and create memories
-3. If memories exist, load them and summarize key points
+The agent reads your codebase and creates memories about what the project does, how to build it, your coding style.
 
-> **Note for agents**: The `{AGENT_NAME}` placeholder in skill files resolves to `claude` or `codex` based on which CLI is running. So `.{AGENT_NAME}/skills/memories/` becomes `.claude/skills/memories/` when using Claude Code.
+> **For the agents reading this**: `{AGENT_NAME}` in the skill files becomes `claude` or `codex` depending on which CLI is running. So `.{AGENT_NAME}/skills/memories/` turns into `.claude/skills/memories/` for Claude Code.
 
-### 2. Switch Modes as Needed
-
-Change agent behavior for different tasks:
+### Switch Modes When You Need To
 
 ```
 $switch_modes-skl <mode>
 ```
 
-| Mode | Use When | Behavior |
-|------|----------|----------|
-| `editing` | Making code changes | Minimal diffs, precise patches |
-| `planning` | Designing before coding | Read-only analysis, produces plans, no edits |
-| `interactive` | Uncertain requirements | Step-by-step, asks clarifying questions |
-| `one-shot` | Clear task, want autonomy | End-to-end execution without questions |
-| `no-memories` | Stateless work, testing | Ignores all memories |
+| Mode | When | What It Does |
+|------|------|--------------|
+| `editing` | Changing code | Small diffs and  patches |
+| `planning` | Thinking before coding | Reads everything, writes nothing, makes plans |
+| `interactive` | Not sure what you want | Asks questions, confirms before doing stuff |
+| `one-shot` | You know exactly what you want | Whomst amonst us  |
+| `no-memories` | Testing, one-off stuff | Forget everything and start fresh |
 
-### 3. Record Learnings (Optional)
+### Save What You Learned (Optional)
 
-Before ending a session or context compaction:
+Before you close out or the context gets compacted call the diary for the llm to leave a little note to the next agent.
 
 ```
 $diary-skl
 ```
 
-Records gotchas, workarounds, and useful discoveries for future sessions.
+Writes down the gotchas, workarounds, and "oh that's how that works" moments for next time.
 
-## Example: First Time on a New Project
+The diary skill is a weird experiment I found from someone on twitter (sadly I cannot find the tweet). But the ideas is to make long term memories out of writing and summarizing diary entries from the agent before compaction. Then after a certain amount of diary entries exist, the agent updates the memory files with the information from the diary entries and removes the old diary entries.
 
-```
-You: $activate-skl
+### Claude Code + Hookify
 
-Agent: I'll check for existing memories in .claude/skills/memories/...
-       No memories found. Running onboarding to analyze this project.
+If you're on Claude Code, check out [hookify](https://github.com/anthropics/claude-code-plugins/tree/main/hookify). You can use a pre compact hook to have the agent write a diary entry before compaction.
 
-       Reading: readme.md, package.json, src/, docs/...
-
-       Creating memories:
-       ✓ project_overview-skl - React app with Express backend
-       ✓ suggested_commands-skl - npm run dev, npm test, npm run build
-       ✓ style_and_conventions-skl - TypeScript, Prettier, Jest
-       ✓ task_completion_checklist-skl - Run tests before commits
-
-       Ready! This is a React/Express e-commerce app. Key commands:
-       - npm run dev: Start dev server
-       - npm test: Run Jest tests
-       How can I help?
-```
-
-## Example: Returning to a Project
+Example - no commits without tests:
 
 ```
-You: $activate-skl
-
-Agent: Loading memories from .claude/skills/memories/...
-
-       Project Summary:
-       - Purpose: React/Express e-commerce app
-       - Commands: npm run dev, npm test
-       - Style: TypeScript, Prettier
-       - Checklist: Tests must pass before commits
-
-       Ready to continue. What would you like to work on?
+/hookify:hookify "Before compaction, add a hook that will call the diary-skl skill"
 ```
 
-## Example: Switching Modes
 
-```
-You: $switch_modes-skl planning
+## The Skills
 
-Agent: Switched to planning mode. I will:
-       - Analyze and plan without making edits
-       - Produce detailed plans with evidence
-       - Ask clarifying questions about requirements
+### Ones You Call
 
-You: I want to add user authentication
+| Skill | What It Does |
+|-------|--------------|
+| `activate-skl` | Loads memories, runs onboarding if needed |
+| `onboarding-skl` | Reads your project, creates memories |
+| `switch_modes-skl` | Changes how the agent behaves |
+| `write_memory-skl` | Updates memory files |
+| `diary-skl` | Saves learnings before context dies |
 
-Agent: Let me analyze the codebase and create an auth implementation plan...
-
-       [Reads existing code, identifies patterns]
-
-       ## Authentication Plan
-
-       ### Option A: JWT with httpOnly cookies
-       - Pros: Stateless, works with your existing Express setup
-       - Files to create: src/middleware/auth.ts, src/routes/auth.ts
-       - Files to modify: src/app.ts, src/types/index.ts
-
-       ### Option B: Session-based with Redis
-       - Pros: Easy revocation, familiar pattern
-       - Requires: Redis instance
-
-       Which approach do you prefer?
-```
-
-## Available Skills
-
-### Core Skills (`-skl` suffix, user-invocable)
-
-| Skill | Purpose |
-|-------|---------|
-| `activate-skl` | Session entry point - loads memories, triggers onboarding if needed |
-| `onboarding-skl` | Analyzes project and creates baseline memory skills |
-| `switch_modes-skl` | Changes agent mode |
-| `write_memory-skl` | Writes/updates memory files with proper format |
-| `diary-skl` | Records session learnings before compaction |
-
-### Mode Definitions (`-ski` suffix, internal)
+### Mode Definitions (Internal)
 
 | Mode | File |
 |------|------|
@@ -211,67 +163,13 @@ Agent: Let me analyze the codebase and create an auth implementation plan...
 | One-shot | `mode-one-shot-ski` |
 | No-memories | `mode-no-memories-ski` |
 
-## How It Works
 
-### Memory System
+## Naming Convention
 
-When you run `$activate-skl` on a new project, the agent creates four baseline memories:
+- `-skl` = skills you can call
+- `-ski` = internal mode stuff
+- Memory skills get `-skl` too
 
-- `project_overview-skl` - Purpose, architecture, key components
-- `suggested_commands-skl` - Build, test, run commands
-- `style_and_conventions-skl` - Code style, naming, patterns
-- `task_completion_checklist-skl` - Verification steps
+## Problems?
 
-These are stored in `.claude/skills/memories/` (Claude Code) or `.codex/skills/memories/` (Codex).
-
-### Directory Structure After Onboarding
-
-```
-your-project/
-├── .claude/
-│   └── skills/
-│       └── memories/
-│           ├── project_overview-skl/
-│           │   └── SKILL.md
-│           ├── suggested_commands-skl/
-│           │   └── SKILL.md
-│           ├── style_and_conventions-skl/
-│           │   └── SKILL.md
-│           └── task_completion_checklist-skl/
-│               └── SKILL.md
-└── ... your code ...
-```
-
-### Typical Workflow
-
-```
-Session 1 (New Project):
-  $activate-skl → runs onboarding → creates memories
-
-Session 2+:
-  $activate-skl → loads memories → ready to work
-  $switch_modes-skl editing → precise code changes
-  $diary-skl → record what you learned
-```
-
-## Claude Code: Hookify Integration
-
-For Claude Code users, you can enhance Skillrena with [hookify](https://github.com/anthropics/claude-code-plugins/tree/main/hookify) - a Claude Code plugin that creates hooks to prevent unwanted agent behaviors.
-
-Example: Prevent the agent from committing without running tests:
-
-```
-/hookify:hookify "Block commits if tests haven't been run in this session"
-```
-
-Hookify complements Skillrena's mode system by adding guardrails that persist across sessions.
-
-## Naming Conventions
-
-- `-skl`: User-invocable skills (e.g., `activate-skl`)
-- `-ski`: Internal mode definitions (e.g., `mode-editing-ski`)
-- Memory skills also use `-skl` suffix
-
-## Feedback
-
-Report issues or suggestions on [GitHub](https://github.com/SteveBronder/skillrena/issues/new).
+Open an issue: [GitHub](https://github.com/SteveBronder/skillrena/issues/new)

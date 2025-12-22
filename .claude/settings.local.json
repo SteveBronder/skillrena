@@ -7,7 +7,9 @@
       "Skill(hookify:writing-rules)",
       "Bash(ls:*)",
       "Skill(activate-skl)",
-      "Skill(onboarding-skl)"
+      "Skill(onboarding-skl)",
+      "WebFetch(domain:stevebronder.com)",
+      "WebFetch(domain:github.com)"
     ]
   },
   "outputStyle": "default"
