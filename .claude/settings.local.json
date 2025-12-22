@@ -9,7 +9,9 @@
       "Skill(activate-skl)",
       "Skill(onboarding-skl)",
       "WebFetch(domain:stevebronder.com)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(done)",
+      "Bash(grep:*)"
     ]
   },
   "outputStyle": "default"

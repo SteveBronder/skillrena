@@ -17,6 +17,8 @@ That's it. ~2,880 tokens for everything. Running `$activate-skl` to load your pr
 
 ### The Numbers
 
+Using claude's `/context` command we can get an idea of how many tokens these skils all require
+
 ```
 Skills and slash commands · /skills
 └ activate-skl: 765 tokens
@@ -32,6 +34,8 @@ Skills and slash commands · /skills
 ```
 
 ### Before/After Activation
+
+Here is a before and after of claude's `/context` when we activate skillrena via `$activate-skl`
 
 ```
 > /context
@@ -64,7 +68,7 @@ Skills and slash commands · /skills
      ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝
 ```
 
-So ~9k tokens and your agent knows everything about your project. Not bad, but not terrible.
+So ~9k tokens and your agent knows everything about your project. Not great, but not terrible.
 
 ## What You Need
 
