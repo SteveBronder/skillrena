@@ -17,21 +17,24 @@ That's it. ~2,880 tokens for everything. Running `$activate-skl` to load your pr
 
 ### The Numbers
 
-Using claude's `/context` command we can get an idea of how many tokens these skils all require
+Using claude's `/context` command we can get an idea of how many tokens these skils all require when each is read in full.
 
 ```
-Skills and slash commands · /skills
-└ activate-skl: 765 tokens
-└ onboarding-skl: 596 tokens
-└ write_memory-skl: 432 tokens
-└ mode-one-shot-ski: 178 tokens
-└ diary-skl: 169 tokens
-└ mode-no-memories-ski: 161 tokens
-└ mode-editing-ski: 156 tokens
-└ mode-interactive-ski: 147 tokens
-└ mode-planning-ski: 145 tokens
-└ switch_modes-skl: 131 tokens
+ activate-skl · ~791 tokens
+ diary-skl · ~189 tokens
+ mode-no-memories-ski · ~168 tokens
+ mode-interactive-ski · ~161 tokens
+ mode-one-shot-ski · ~180 tokens
+ mode-planning-ski · ~158 tokens
+ mode-editing-ski · ~165 tokens
+ onboarding-skl · ~617 tokens
+ plan-plan · ~3.1k tokens
+ switch_modes-skl · ~150 tokens
+ write_memory-skl · ~466 tokens
 ```
+
+The `plan-plan` and `activate-skl` skills are meta skills which will be used for a session for setup. Then it is assumed the user will clear the context after they are done.
+
 
 ### Before/After Activation
 
@@ -76,7 +79,6 @@ Right now this works with:
 - **[Claude Code](https://docs.anthropic.com/en/docs/claude-code)**
 - **[Codex CLI](https://github.com/openai/codex)**
 
-Get one of those installed first.
 
 ## Installation
 
@@ -92,8 +94,11 @@ To remove the skills call the script below. This will delete all folders in `~/.
 ./scripts/remove_skills.sh
 ```
 
-**NOTE**: Codex doesn't do symlinks, so we have to hard copy. :(
-
+## **NOTE**:
+- Codex doesn't do symlinks, so we have to hard copy in the agent's folder. :(
+- While codex allows for subfolders in the skills folder, claude does not. So the directory structure for codex will differ.
+    - `.codex/skills/skillrena/*-skl/`
+    - `.claude/skills/*-skl/`
 ## How To Use It
 
 ### Start Every Session With This
@@ -144,6 +149,35 @@ Example - no commits without tests:
 /hookify:hookify "Before compaction, add a hook that will call the diary-skl skill"
 ```
 
+### Plan Features with Design Docs
+
+For multi-file features or complex changes, use `$plan-plan-skl` to bootstrap a design-doc workflow in your repo:
+
+```
+$plan-plan-skl
+```
+
+This creates:
+- `design-docs/` folder with templates and active docs
+- A project-specific `$design-doc` skill for creating new design documents
+
+**Why use design docs?**
+
+Agents tend to dive into implementation without thinking through the full scope. Design docs force upfront planning and include guardrails against common agent failure modes:
+
+- **Reuse-first**: Search existing code before creating new utilities
+- **No destructive shortcuts**: Never delete data to pass tests
+- **Alternatives requirement**: Evaluate 2+ approaches before committing
+- **Uncertainty protocol**: Ask clarifying questions instead of assuming
+
+**Two-phase subtask workflow:**
+
+1. **Planning**: Write human-readable subtasks in the design doc (easy to review/iterate)
+2. **Execution**: After you approve, the agent generates structured XML in `design-docs/agents/` for reliable task parsing
+
+Best for: Multi-file features, refactors, anything touching external APIs/databases
+
+Skip for: Quick fixes, single-file changes, exploratory work
 
 ## The Skills
 
@@ -156,6 +190,7 @@ Example - no commits without tests:
 | `switch_modes-skl` | Changes how the agent behaves |
 | `write_memory-skl` | Updates memory files |
 | `diary-skl` | Saves learnings before context dies |
+| `plan-plan-skl` | Bootstraps design-doc workflow for your repo |
 
 ### Mode Definitions (Internal)
 
