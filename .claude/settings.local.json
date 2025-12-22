@@ -11,7 +11,9 @@
       "WebFetch(domain:stevebronder.com)",
       "WebFetch(domain:github.com)",
       "Bash(done)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Skill(plan-plan-skl)",
+      "Bash(mkdir:*)"
     ]
   },
   "outputStyle": "default"
