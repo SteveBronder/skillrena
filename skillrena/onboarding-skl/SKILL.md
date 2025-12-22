@@ -8,12 +8,12 @@ description: Discover project and create baseline memory skills.
 ## Quick start
 - Read docs, configs, and entrypoints.
 - Create the baseline memory skills via `write_memory-skl`.
-  - Each memory is a skill file at `./.{AGENT_NAME}/skills/memories/{SKILL_NAME}/skill.md`.
+  - Each memory is a skill file at `./.{AGENT_NAME}/skills/memories/<name>-skl/SKILL.md`.
   - Example baseline set:
-    - `project_overview/skill.md`
-    - `suggested_commands/skill.md`
-    - `style_and_conventions/skill.md`
-    - `task_completion_checklist/skill.md`
+    - `project_overview-skl/SKILL.md`
+    - `suggested_commands-skl/SKILL.md`
+    - `style_and_conventions-skl/SKILL.md`
+    - `task_completion_checklist-skl/SKILL.md`
 
 ## Discovery checklist
 - `readme.md` and top-level docs
@@ -25,7 +25,7 @@ description: Discover project and create baseline memory skills.
 ## Memory templates (verbose)
 If any section is unknown, note it and add where to find it.
 
-### project_overview/skill.md
+### project_overview-skl/SKILL.md
 - Purpose/goal (what this repo exists to do)
 - Users/stakeholders (who uses it and why)
 - Primary workflows (top 3 paths a user follows)
@@ -36,7 +36,7 @@ If any section is unknown, note it and add where to find it.
 - Repo map (top-level folders and what they contain)
 - Known risks/constraints (performance, security, domain rules)
 
-### suggested_commands/skill.md
+### suggested_commands-skl/SKILL.md
 - Build commands (with expected outputs)
 - Test commands (unit/integration/e2e)
 - Lint/format commands
@@ -44,7 +44,7 @@ If any section is unknown, note it and add where to find it.
 - Environment setup (env vars, tooling versions, bootstrap)
 - Helpful scripts (what they do and when to use them)
 
-### style_and_conventions/skill.md
+### style_and_conventions-skl/SKILL.md
 - Code style (formatters, linters, naming)
 - Language/framework conventions (idioms, patterns)
 - File/dir conventions (where new code/tests/docs go)
@@ -52,7 +52,7 @@ If any section is unknown, note it and add where to find it.
 - Error handling/logging conventions
 - Documentation conventions (doc locations, templates)
 
-### task_completion_checklist/skill.md
+### task_completion_checklist-skl/SKILL.md
 - Preconditions (inputs to confirm with user)
 - Required checks (tests/lint/build)
 - Review points (risk areas to double-check)

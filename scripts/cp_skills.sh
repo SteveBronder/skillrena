@@ -1,4 +1,4 @@
-mkdir -p "$HOME/.codex/skills/skillrena"
-cp -r skillrena/* "$HOME/.codex/skills/skillrena/"
-mkdir -p "$HOME/.claude/skills/skillrena"
-cp -r skillrena/* "$HOME/.claude/skills/skillrena/"
+mkdir -p "$HOME/.codex/skills"
+cp -r skillrena/*-skl skillrena/*-ski "$HOME/.codex/skills/" 2>/dev/null || true
+mkdir -p "$HOME/.claude/skills"
+cp -r skillrena/*-skl skillrena/*-ski "$HOME/.claude/skills/" 2>/dev/null || true

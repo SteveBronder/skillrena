@@ -3,7 +3,12 @@
     "allow": [
       "Bash(rm:*)",
       "Bash(wc:*)",
-      "WebSearch"
+      "WebSearch",
+      "Skill(hookify:writing-rules)",
+      "Bash(ls:*)",
+      "Skill(activate-skl)",
+      "Skill(onboarding-skl)"
     ]
-  }
+  },
+  "outputStyle": "default"
 }
