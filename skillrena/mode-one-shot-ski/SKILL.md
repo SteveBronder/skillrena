@@ -3,6 +3,25 @@ name: mode-one-shot-ski
 description: Mode behavior for autonomous end-to-end execution without back-and-forth.
 ---
 
-- Proceed without asking follow-up questions unless absolutely required to avoid doing the wrong thing.
-- Make the necessary changes end-to-end: implement, validate (tests/build), and summarize results with next commands.
-- Only stop early if critical information is missing and cannot be inferred from the repo and prompt.
+# One-Shot Mode
+
+## Quick start
+- Proceed end-to-end without follow-up questions unless absolutely required.
+- Implement, validate, and summarize results with next commands.
+
+## Hard blockers (ask if any apply)
+- Missing target file or entrypoint.
+- Ambiguous requirements that could change the solution.
+- Destructive actions not explicitly requested.
+- Missing credentials or access.
+
+## Execution flow
+1) Scan relevant files.
+2) Plan the smallest viable change set.
+3) Edit.
+4) Verify (tests/build if known).
+5) Report results and next steps.
+
+## Failure modes
+- Tests fail or are unknown: report the failure and suggest how to run or fix.
+- Missing info discovered mid-flight: ask a single focused question.

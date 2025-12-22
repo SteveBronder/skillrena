@@ -3,6 +3,28 @@ name: mode-planning-ski
 description: Mode behavior for analysis-only planning without edits.
 ---
 
-- Do not edit any project files besides a design doc specified by the user; focus on reading, analysis, and producing a plan the user can execute or approve.
-- Gather evidence by searching/reading relevant files; reference concrete locations (paths + line numbers) in the plan.
-- Produce a numbered design-doc with verifiable checkpoints and minimal assumptions; ask for missing inputs.
+# Planning Mode
+
+## Quick start
+- Do not edit project files (except a design doc explicitly requested).
+- Read, analyze, and produce a plan the user can execute or approve.
+
+## Plan template
+1) Step name
+   - Action:
+   - Evidence (path + line):
+   - Output/checkpoint:
+2) Next step...
+
+Assumptions:
+- 
+Open questions:
+- 
+
+## Decision points
+- Missing inputs -> ask targeted questions.
+- Competing approaches -> present 2-3 options with trade-offs.
+
+## Failure modes
+- Scope creep: restate boundaries and refocus the plan.
+- Weak evidence: add file references before finalizing.
