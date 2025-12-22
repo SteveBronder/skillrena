@@ -15,7 +15,6 @@ $design-doc
 The skill will:
 - Ask you to select a template (`skill` or `feature`)
 - Create a main doc at `design-docs/active/YYYYMMDD-<slug>.md`
-- Create a tasks file at `design-docs/active/YYYYMMDD-<slug>-tasks.md`
 
 ### 2. Fill Out the Document
 
@@ -25,25 +24,44 @@ Complete all required sections in the main design doc:
 - Proposed design with explicit interfaces
 - Alternatives considered (minimum 2 + "do nothing")
 - Verification strategy
+- **Subtasks** (human-readable checklist)
 
-### 3. Define Subtasks
+### 3. Define Subtasks (Human-Readable)
 
-Add subtasks to the `-tasks.md` file using the pseudo-XML schema. Each task should have:
-- Clear scope (in/out)
-- Reuse check (search existing utilities first)
-- Explicit interfaces and types
-- Acceptance criteria
+Add subtasks to the "## Subtasks" section using this format:
+
+```markdown
+## Subtasks
+
+### T1: [Task Title]
+- **Summary**: One sentence objective
+- **Scope**: What's in / what's out
+- **Acceptance**: Binary pass/fail criteria
+- **Status**: [ ] Not started / [~] In progress / [x] Complete
+
+### T2: [Task Title]
+...
+```
 
 ### 4. Review and Approval
 
 Before implementation:
 - [ ] All `[blocking]` questions resolved
 - [ ] Design reviewed by stakeholder (if applicable)
-- [ ] Tasks are atomic and independently verifiable
+- [ ] Subtasks reviewed and approved by user
 
-### 5. Execute
+### 5. Generate Agent-Executable XML
 
-Agents can read the tasks file and execute subtasks. Each task includes:
+After the user approves the subtasks, the agent generates:
+```
+design-docs/agents/<design-doc-name>.xml
+```
+
+This XML file contains structured task definitions that agents can parse and execute.
+
+### 6. Execute
+
+Agents read the XML file in `design-docs/agents/` and execute subtasks. Each task includes:
 - Scope boundaries
 - Reuse-first checks
 - Verification commands
@@ -59,10 +77,23 @@ design-docs/
 │   ├── base.md            # Meta template with guardrails
 │   ├── skill.md           # Skill creation template
 │   └── feature.md         # General feature template
-└── active/
-    ├── YYYYMMDD-slug.md       # Main design doc
-    └── YYYYMMDD-slug-tasks.md # Subtasks for agent execution
+├── active/
+│   └── YYYYMMDD-slug.md   # Main design doc (with human-readable subtasks)
+└── agents/
+    └── YYYYMMDD-slug.xml  # Agent-executable subtasks (after approval)
 ```
+
+## Two-Phase Subtask Workflow
+
+| Phase | Location | Purpose |
+|-------|----------|---------|
+| 1. Planning | `active/*.md` (Subtasks section) | Human-readable, easy to iterate |
+| 2. Execution | `agents/*.xml` | Machine-parseable, for agent delegation |
+
+This separation ensures:
+- Humans can easily review and edit subtasks during planning
+- Agents get structured data they can reliably parse
+- Clear approval gate before agent work begins
 
 ## Guardrails
 
@@ -77,5 +108,5 @@ All design docs enforce these engineering guardrails:
 ## Naming Convention
 
 - Main doc: `YYYYMMDD-<slug>.md` (e.g., `20251222-new-diary-skill.md`)
-- Tasks file: `YYYYMMDD-<slug>-tasks.md` (e.g., `20251222-new-diary-skill-tasks.md`)
-- Slug: lowercase, hyphen-separated, descriptive (e.g., `auth-mode-skill`, `cli-refactor`)
+- Agent XML: `YYYYMMDD-<slug>.xml` (e.g., `20251222-new-diary-skill.xml`)
+- Slug: lowercase, hyphen-separated, descriptive

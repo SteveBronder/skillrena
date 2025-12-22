@@ -25,22 +25,32 @@ Create (idempotent; do not overwrite without preserving history):
 - `design-docs/templates/base.md` — Meta "base" design doc template (guardrails + structure).
 - `design-docs/templates/<variant>.md` — Project-specific variants (e.g., `feature.md`, `etl_ingest.md`, `db_migration.md`).
 - `.{AGENT_NAME}/skills/design-doc-skl/SKILL.md` — The generated `$design-doc` skill.
+- `design-docs/agents/<design-doc-name>.xml` — Agent-executable subtasks (created after user approval).
 </file_list>
 
 <output_format>
-**Design docs are written in markdown** — not XML. Markdown is easier for humans to read/edit and for agents to parse during collaboration. The subtask schema uses pseudo-XML within markdown fenced blocks for structure, but the doc itself is `.md`.
+**Design docs are written in markdown** — not XML. Markdown is easier for humans to read/edit and for agents to parse during collaboration. Agent-executable subtasks use XML in a separate file under `design-docs/agents/`.
 </output_format>
 
-<subtask_separation>
-Subtasks live in a **separate file** from the main design doc:
-- Main doc: `design-docs/active/YYYYMMDD-<slug>.md` — context, goals, design, guardrails
-- Subtasks: `design-docs/active/YYYYMMDD-<slug>-tasks.md` — pseudo-XML task blocks for agent execution
+<subtask_workflow>
+Subtasks follow a **two-phase workflow**:
+
+**Phase 1: Human-Readable Subtasks (in main design doc)**
+- Add a "## Subtasks" section to the main design doc
+- List tasks as a human-readable markdown checklist
+- Collaborate with user to refine scope, order, and acceptance criteria
+- User reviews and approves the subtask list
+
+**Phase 2: Agent-Executable XML (after approval)**
+- Once user approves subtasks, generate `design-docs/agents/<design-doc-name>.xml`
+- XML file contains structured task definitions for agent delegation
+- Agents read only the XML file when executing tasks
 
 This separation allows:
-- Agents to read only the tasks file when executing
-- Users to review/edit tasks independently
-- Cleaner diffs when tasks are updated
-</subtask_separation>
+- Human-friendly iteration during planning (Phase 1)
+- Machine-parseable structure for execution (Phase 2)
+- Clear approval gate before agent work begins
+</subtask_workflow>
 
 <agent_name_resolution>
 Replace `{AGENT_NAME}` with the agent's config directory:
@@ -162,9 +172,24 @@ The base template MUST include these sections (in order):
 10. Test data acquisition plan (mandatory for external I/O / ETL)
 11. Testing and verification strategy (commands + CI gates + test integrity rules)
 12. Rollout / migration / ops (flags, backfills, observability, runbook)
-13. Open questions / follow-ups
+13. **Subtasks** (human-readable checklist for review)
+14. Open questions / follow-ups
 
-**Note**: Subtasks are in a separate `-tasks.md` file, not in the main design doc.
+**Subtasks Section Format**:
+```markdown
+## Subtasks
+
+### T1: [Task Title]
+- **Summary**: One sentence objective
+- **Scope**: What's in / what's out
+- **Acceptance**: Binary pass/fail criteria
+- **Status**: [ ] Not started / [~] In progress / [x] Complete
+
+### T2: [Task Title]
+...
+```
+
+After user approves subtasks, generate `design-docs/agents/<design-doc-name>.xml` with the full XML schema.
 </base_template_sections>
 
 <guardrails>
@@ -179,12 +204,22 @@ Include verbatim in base + project templates under "Engineering Guardrails for A
 </guardrails>
 
 <subtask_schema>
-Subtasks go in `design-docs/active/YYYYMMDD-<slug>-tasks.md`.
+Agent-executable subtasks go in `design-docs/agents/<design-doc-name>.xml`.
 
-Each task follows this pseudo-XML schema (within markdown fenced blocks):
+**This file is generated ONLY after the user approves the human-readable subtasks in the main design doc.**
+
+The XML file wraps all tasks in a root element and follows this schema:
 
 ```xml
-<task id="T#-slug" owner="unassigned" status="planned">
+<?xml version="1.0" encoding="UTF-8"?>
+<design-doc-tasks>
+  <metadata>
+    <design-doc>YYYYMMDD-slug.md</design-doc>
+    <created>YYYY-MM-DD</created>
+    <approved-by>user</approved-by>
+  </metadata>
+
+  <task id="T1-slug" owner="unassigned" status="planned">
   <summary>One sentence objective.</summary>
 
   <scope>
@@ -258,12 +293,21 @@ Each task follows this pseudo-XML schema (within markdown fenced blocks):
   <acceptance>
     <criterion>Binary "passes when …".</criterion>
   </acceptance>
-
+  <task_completed_status>
+  false
+  </task_completed_status>
   <safety>
     <destructive_actions>false</destructive_actions>
     <notes>Any risk or confirmation requirements.</notes>
   </safety>
 </task>
+
+  <!-- Additional tasks follow the same structure -->
+  <task id="T2-slug" owner="unassigned" status="planned">
+    ...
+  </task>
+
+</design-doc-tasks>
 ```
 </subtask_schema>
 
@@ -272,6 +316,7 @@ Each task follows this pseudo-XML schema (within markdown fenced blocks):
    - `design-docs/`
    - `design-docs/templates/`
    - `design-docs/active/`
+   - `design-docs/agents/`
 
 2. **Write base docs**:
    - `design-docs/README.md` (workflow + approvals)
@@ -293,11 +338,11 @@ Each task follows this pseudo-XML schema (within markdown fenced blocks):
 
 6. **Generate the `$design-doc` skill** at `.{AGENT_NAME}/skills/design-doc-skl/SKILL.md`:
    - Prompts user to select a template variant
-   - Creates main doc at `design-docs/active/YYYYMMDD-<slug>.md`
-   - Creates tasks file at `design-docs/active/YYYYMMDD-<slug>-tasks.md`
+   - Creates main doc at `design-docs/active/YYYYMMDD-<slug>.md` with human-readable subtasks section
    - Enforces guardrails
    - Requires test-data plan for external I/O
    - Includes uncertainty protocol
+   - **After user approves subtasks**: generates `design-docs/agents/<design-doc-name>.xml`
 
 7. **Idempotency**:
    - Never overwrite existing templates without timestamped backup
@@ -305,11 +350,11 @@ Each task follows this pseudo-XML schema (within markdown fenced blocks):
 </generation_steps>
 
 <completion_criteria>
-- `design-docs/` exists with README + templates index
-- `base.md` includes guardrails
+- `design-docs/` exists with README + templates index + `agents/` subdirectory
+- `base.md` includes guardrails and human-readable subtasks section format
 - At least one project-specific template variant exists with repo-specific test commands
 - `$design-doc` skill exists and references templates correctly
-- Skill creates separate `-tasks.md` file for subtasks
+- Skill workflow: human-readable subtasks in main doc → user approval → XML in `design-docs/agents/`
 </completion_criteria>
 
 <decision_points>

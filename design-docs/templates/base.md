@@ -137,7 +137,35 @@ _How will this be deployed/released?_
 
 _Impact on existing users/systems._
 
-## 11. Open Questions
+## 11. Subtasks
+
+_Human-readable task list for review. After approval, agent generates XML in `design-docs/agents/`._
+
+### T1: [Task Title]
+
+- **Summary**: One sentence objective
+- **Scope**: What's in / what's out
+- **Acceptance**: Binary pass/fail criteria
+- **Status**: [ ] Not started
+
+### T2: [Task Title]
+
+- **Summary**: One sentence objective
+- **Scope**: What's in / what's out
+- **Acceptance**: Binary pass/fail criteria
+- **Status**: [ ] Not started
+
+<!-- Add more tasks as needed -->
+
+---
+
+**Subtask Approval Checkpoint**
+
+- [ ] User has reviewed all subtasks
+- [ ] Scope and acceptance criteria are clear
+- [ ] Ready to generate `design-docs/agents/<design-doc-name>.xml`
+
+## 12. Open Questions
 
 _Unresolved issues that need answers before or during implementation._
 

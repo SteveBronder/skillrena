@@ -180,7 +180,33 @@ _Verify the skill stays within token budget._
 - [ ] YAML frontmatter is valid
 - [ ] Naming convention followed (`-skl` or `-ski`)
 
-## 10. Rollout
+## 10. Subtasks
+
+_Human-readable task list for review. After approval, agent generates XML in `design-docs/agents/`._
+
+### T1: [Task Title]
+
+- **Summary**: One sentence objective
+- **Scope**: What's in / what's out
+- **Acceptance**: Binary pass/fail criteria
+- **Status**: [ ] Not started
+
+### T2: [Task Title]
+
+- **Summary**: One sentence objective
+- **Scope**: What's in / what's out
+- **Acceptance**: Binary pass/fail criteria
+- **Status**: [ ] Not started
+
+---
+
+**Subtask Approval Checkpoint**
+
+- [ ] User has reviewed all subtasks
+- [ ] Scope and acceptance criteria are clear
+- [ ] Ready to generate `design-docs/agents/<design-doc-name>.xml`
+
+## 11. Rollout
 
 ### Installation
 
@@ -193,7 +219,7 @@ _Verify the skill stays within token budget._
 - [ ] Update `readme.md` if skill is user-facing
 - [ ] Add to skill tables in documentation
 
-## 11. Open Questions
+## 12. Open Questions
 
 | Question | Status | Answer |
 |----------|--------|--------|
