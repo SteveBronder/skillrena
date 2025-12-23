@@ -11,10 +11,11 @@ Serena is great - it gives agents deep project understanding through MCP servers
 | Approach | Token Cost | Setup |
 |----------|------------|-------|
 | Serena | ~50k+ tokens | MCP server required |
-| Skillrena | ~2.9k tokens (all skills) | Copy some files, done |
+| Skillrena | ~9k tokens (all skills) | Copy some files, done |
 
-That's it. ~2,880 tokens for everything. Running `$activate-skl` to load your project memories adds about 9k more. Still leaves plenty of room for actual work.
+That's it. Running `$activate-skl` to load your project memories adds about 9k more. Still leaves plenty of room for actual work.
 
+While serana also comes with a language server, agent cli's like claude now come with their own language servers, so that means we can focus on just keeping track of memories surrounding the projects goals.
 ### The Numbers
 
 Using claude's `/context` command we can get an idea of how many tokens these skils all require when each is read in full.
@@ -82,13 +83,14 @@ Right now this works with:
 
 ## Installation
 
+There is no nice way to share skills at the moment. So we provide a script to copy skills to `~/.claude/skills/` and `~/.codex/skills/`.
+
 ```bash
 ./scripts/cp_skills.sh
 ```
 
-That copies skills to `~/.claude/skills/` and `~/.codex/skills/`.
 
-To remove the skills call the script below. This will delete all folders in `~/.{AGENT_NAME}/skills/memories`
+To remove the skills call the script below. This will delete all folders in `~/.{AGENT_NAME}/skills/skillrena` and skills that end in `-skl`
 
 ```bash
 ./scripts/remove_skills.sh
@@ -96,12 +98,14 @@ To remove the skills call the script below. This will delete all folders in `~/.
 
 ## **NOTE**:
 - Codex doesn't do symlinks, so we have to hard copy in the agent's folder. :(
+- Once codex fixes that then we will just symlink the skills in this folder into the codex directory.
 - While codex allows for subfolders in the skills folder, claude does not. So the directory structure for codex will differ.
     - `.codex/skills/skillrena/*-skl/`
     - `.claude/skills/*-skl/`
-## How To Use It
 
-### Start Every Session With This
+## Skill Overview
+
+### `$activate-skl`: Give the agent background information
 
 When entering a project, call `$activate-skl` to either have the agent write memory skills in `.{AGENT_NAME}/skills/memories` or to skim the memories if they already exist.
 
@@ -111,9 +115,9 @@ $activate-skl
 
 The agent reads your codebase and creates memories about what the project does, how to build it, your coding style.
 
-> **For the agents reading this**: `{AGENT_NAME}` in the skill files becomes `claude` or `codex` depending on which CLI is running. So `.{AGENT_NAME}/skills/memories/` turns into `.claude/skills/memories/` for Claude Code.
+**For the agents reading this**: `{AGENT_NAME}` in the skill files becomes `claude` or `codex` depending on which CLI is running. So `.{AGENT_NAME}/skills/memories/` turns into `.claude/skills/memories/` for Claude Code.
 
-### Switch Modes When You Need To
+### `$switch_modes-skl`: Switch modes for certain tasks
 
 ```
 $switch_modes-skl <mode>
@@ -127,7 +131,7 @@ $switch_modes-skl <mode>
 | `one-shot` | You know exactly what you want | Whomst amonst us  |
 | `no-memories` | Testing, one-off stuff | Forget everything and start fresh |
 
-### Save What You Learned (Optional)
+### `$diary-skl`: Save what the agent learned this session
 
 Before you close out or the context gets compacted call the diary for the llm to leave a little note to the next agent.
 
@@ -139,7 +143,7 @@ Writes down the gotchas, workarounds, and "oh that's how that works" moments for
 
 The diary skill is a weird experiment I found from someone on twitter (sadly I cannot find the tweet). But the ideas is to make long term memories out of writing and summarizing diary entries from the agent before compaction. Then after a certain amount of diary entries exist, the agent updates the memory files with the information from the diary entries and removes the old diary entries.
 
-### Claude Code + Hookify
+#### Claude Code + Hookify to automate diary entries
 
 If you're on Claude Code, check out [hookify](https://github.com/anthropics/claude-code-plugins/tree/main/hookify). You can use a pre compact hook to have the agent write a diary entry before compaction.
 
@@ -149,7 +153,7 @@ Example - no commits without tests:
 /hookify:hookify "Before compaction, add a hook that will call the diary-skl skill"
 ```
 
-### Plan Features with Design Docs
+### `$plan-plan-skl`: Write a design doc template for your project
 
 For multi-file features or complex changes, use `$plan-plan-skl` to bootstrap a design-doc workflow in your repo:
 
@@ -178,36 +182,6 @@ Agents tend to dive into implementation without thinking through the full scope.
 Best for: Multi-file features, refactors, anything touching external APIs/databases
 
 Skip for: Quick fixes, single-file changes, exploratory work
-
-## The Skills
-
-### Ones You Call
-
-| Skill | What It Does |
-|-------|--------------|
-| `activate-skl` | Loads memories, runs onboarding if needed |
-| `onboarding-skl` | Reads your project, creates memories |
-| `switch_modes-skl` | Changes how the agent behaves |
-| `write_memory-skl` | Updates memory files |
-| `diary-skl` | Saves learnings before context dies |
-| `plan-plan-skl` | Bootstraps design-doc workflow for your repo |
-
-### Mode Definitions (Internal)
-
-| Mode | File |
-|------|------|
-| Editing | `mode-editing-ski` |
-| Planning | `mode-planning-ski` |
-| Interactive | `mode-interactive-ski` |
-| One-shot | `mode-one-shot-ski` |
-| No-memories | `mode-no-memories-ski` |
-
-
-## Naming Convention
-
-- `-skl` = skills you can call
-- `-ski` = internal mode stuff
-- Memory skills get `-skl` too
 
 ## Problems?
 
