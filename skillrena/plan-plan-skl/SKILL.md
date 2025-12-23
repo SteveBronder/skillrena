@@ -1,6 +1,6 @@
 ---
-name: plan-plan
-description: Meta-skill that bootstraps the repo's design-doc workflow and generates a project-specific design doc skill plus templates under `design-docs/`.
+name: plan-plan-skl
+description: Bootstraps design-doc workflow by creating design-doc-skl skill with bundled templates. Use when setting up design doc infrastructure for a new project.
 ---
 
 <objective>
@@ -24,11 +24,15 @@ Create (idempotent; do not overwrite without preserving history):
 
 <file_list>
 - `design-docs/README.md` — How design docs are written, reviewed, and used for delegated execution.
-- `design-docs/templates/README.md` — Lists available templates and when to use them.
-- `design-docs/templates/base.md` — Meta "base" design doc template (guardrails + structure).
-- `design-docs/templates/<variant>.md` — Project-specific design doc templates (e.g., `feature.md`, `etl_ingest.md`, `db_migration.md`).
+- `design-docs/active/` — Directory for active design documents.
+- `design-docs/agents/` — Directory for agent-executable XML subtasks.
 - `.{AGENT_NAME}/skills/design-doc-skl/SKILL.md` — The generated `${DESIGN_DOC_SKILL_NAME}-skl` skill.
+- `.{AGENT_NAME}/skills/design-doc-skl/templates/README.md` — Lists available templates and when to use them.
+- `.{AGENT_NAME}/skills/design-doc-skl/templates/base.md` — Meta "base" design doc template (guardrails + structure).
+- `.{AGENT_NAME}/skills/design-doc-skl/templates/<variant>.md` — Project-specific templates (e.g., `skill.md`, `feature.md`).
 </file_list>
+
+**Note**: Templates are bundled with the skill (not in `design-docs/`) per Agent Skills progressive disclosure pattern.
 
 <output_format>
 **Design docs are written in markdown** — not XML. Markdown is easier for humans to read/edit and for agents to parse during collaboration. Agent-executable subtasks use XML in a separate file under `design-docs/agents/`.
@@ -61,26 +65,27 @@ If you have not already, run the $activate-skl skill to get an overview of the p
 <generation_steps>
 1. **Create folder structure** (if missing):
    - `design-docs/`
-   - `design-docs/templates/`
    - `design-docs/active/`
    - `design-docs/agents/`
+   - `.{AGENT_NAME}/skills/design-doc-skl/`
+   - `.{AGENT_NAME}/skills/design-doc-skl/templates/`
 
-2. **Write design doc template and skill if they do not exist**:
+2. **Write design doc skill and bundled templates**:
    - `design-docs/README.md` (workflow + approvals)
-   - `design-docs/templates/README.md` (template index)
-   - `design-docs/templates/{DESIGN_DOC_SKILL_NAME}.md` (meta template with guardrails)
-    - `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/SKILL.md`
+   - `.{AGENT_NAME}/skills/design-doc-skl/SKILL.md` (the skill)
+   - `.{AGENT_NAME}/skills/design-doc-skl/templates/README.md` (template index)
+   - `.{AGENT_NAME}/skills/design-doc-skl/templates/base.md` (meta template with guardrails)
+   - `.{AGENT_NAME}/skills/design-doc-skl/templates/skill.md` (skill creation template)
+   - `.{AGENT_NAME}/skills/design-doc-skl/templates/feature.md` (feature template)
 
-3. **Generate the `${DESIGN_DOC_SKILL_NAME}-skl` skill** at `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}-skl/SKILL.md`:
-
-4. **Run Adaptive Questioning Protocol**:
+3. **Run Adaptive Questioning Protocol**:
    - Produce "Detected Defaults Summary"
    - Ask triggered questions
    - Stop for answers before proceeding
 
-5. **Idempotency**:
+4. **Idempotency**:
    - Never overwrite existing templates without timestamped backup
-   - Add new variants to `design-docs/templates/README.md`
+   - Add new variants to `.{AGENT_NAME}/skills/design-doc-skl/templates/README.md`
 </generation_steps>
 
 
@@ -123,7 +128,7 @@ Ask only what you cannot infer from the scan:
 <question_examples>
 1. `[blocking]` **Template variants desired**
    - "Which templates do you want generated? (e.g., `feature`, `etl_http_ws`, `db_migration`, `refactor`)"
-   - Why: determines `design-docs/templates/*.md` set.
+   - Why: determines templates bundled with skill.
 
 2. `[blocking]` **Test integrity policy**
    - "What is your rule on mocks? (only mock boundaries; prefer record/replay; never mock core transforms)"
@@ -195,10 +200,11 @@ Include verbatim in the design doc skill you create under "Engineering Guardrail
 
 
 <completion_criteria>
-- `design-docs/` exists with README + templates index + `agents/` subdirectory
+- `design-docs/` exists with README + `active/` + `agents/` subdirectories
+- `${DESIGN_DOC_SKILL_NAME}-skl` skill exists at `.{AGENT_NAME}/skills/design-doc-skl/`
+- Templates bundled at `.{AGENT_NAME}/skills/design-doc-skl/templates/`
 - `base.md` includes guardrails and human-readable subtasks section format
 - At least one project-specific template variant exists with repo-specific test commands
-- `${DESIGN_DOC_SKILL_NAME}-skl` skill exists and references templates correctly
 - Skill workflow: human-readable subtasks in main doc → user approval → XML in `design-docs/agents/`
 </completion_criteria>
 

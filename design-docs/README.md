@@ -72,16 +72,13 @@ Agents read the XML file in `design-docs/agents/` and execute subtasks. Each tas
 ```
 design-docs/
 ├── README.md              # This file
-├── templates/
-│   ├── README.md          # Template index
-│   ├── base.md            # Meta template with guardrails
-│   ├── skill.md           # Skill creation template
-│   └── feature.md         # General feature template
 ├── active/
 │   └── YYYYMMDD-slug.md   # Main design doc (with human-readable subtasks)
 └── agents/
     └── YYYYMMDD-slug.xml  # Agent-executable subtasks (after approval)
 ```
+
+**Templates**: Bundled with the `$design-doc-skl` skill at `.claude/skills/design-doc-skl/templates/`
 
 ## Two-Phase Subtask Workflow
 
