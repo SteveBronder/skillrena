@@ -27,6 +27,11 @@ The information you write must give future agents enough information to confiden
 - doc, design, and testing folders
 - It is imperative you understand the testing process for the project
 - Locations of common utilities used in the project.
+- Search for a docs/ folder and summarise any architecture or process documents.”
+- Read function documentation when available
+- If a module contains its own README with detailed features or concepts, consider it an important folder to note.
+- Describe the data or control flow through the project’s main components.
+- Summarise environment setup and console commands by reading any shell scripts or CLI definitions.
 </must_read_files>
 
 <templates>
@@ -34,6 +39,7 @@ The information you write must give future agents enough information to confiden
 <guidance>
 Below are example templates you can use for the main memories.
 These are non-exhaustive. You should think clearly about how to modify these to align with the overall project.
+After skills below, decide whether extra skills are warranted (e.g., architecture, domain-specific modules) and create them. Ask the user if they would like you to create these skills as explain why you think these skills should exist.
 </guidance>
 <project_overview>
 - Purpose/goal (what this repo exists to do)
@@ -90,6 +96,5 @@ These are non-exhaustive. You should think clearly about how to modify these to 
 </decision_points>
 
 <failure_modes>
-- Overlong memories: keep them compact and task-focused.
 - Unclear structure: document assumptions explicitly.
 </failure_modes>
