@@ -183,6 +183,15 @@ Best for: Multi-file features, refactors, anything touching external APIs/databa
 
 Skip for: Quick fixes, single-file changes, exploratory work
 
+### `$subplan-skl`: Make agent friendly version of a design doc
+
+This skill takes a design document made with `$design-doc` and translates it into an agent friendly set of subtasks.
+
+Agents can parse markdown, but Anthropic has found that agents respond better to structured formats like XML or JSON.
+
+The agent will write a new `design-docs/agent/{DESIGN_NAME}.xml` file which future agents will use to complete the design.
+
+
 ## Problems?
 
 Open an issue: [GitHub](https://github.com/SteveBronder/skillrena/issues/new)
