@@ -1,18 +1,22 @@
 ---
 name: plan-plan
 command: $plan-plan
-description: Meta-skill that bootstraps the repo's design-doc workflow and generates a project-specific `$design-doc` skill plus templates under `design-docs/`.
+description: Meta-skill that bootstraps the repo's design-doc workflow and generates a project-specific design doc skill plus templates under `design-docs/`.
 ---
 
 <objective>
-1. Create a repo-local `design-docs/` workspace (templates + active docs + index).
-2. Generate a **project-specific** `$design-doc` skill for authoring feature design docs with:
+1. If the `design-doc` folder does not already exist, create a repo-local `design-docs/` workspace (templates + active docs + index).
+  - If the `design-doc` folder already exists, stop and ask the user how to proceed.
+2. Create a **project-specific** design doc template. If the user does not specify a specific type of design doc they want to create, we will be creating a general design document template called `base-design-doc.md` for the overall project.
+3. Generate a **project-specific** design-doc skill for authoring design docs with:
    - explicit specs (interfaces, signatures, types)
    - mandatory test-data acquisition plan for ETL / HTTP / WebSocket work
    - enforceable guardrails against common agent failure modes
-   - subtasks in a separate file for agent delegation
-3. Support repeated runs to create additional templates (variants) without breaking existing docs.
+   - Example: The user wants to make a design doc skill for the ETL pipeline creations in the project. Then your task would be to create a `$etl-design-doc` skill.
+4. Support repeated runs to create additional templates (variants) without breaking existing docs.
 
+For the rest of this document `{DESIGN_DOC_SKILL_NAME}` will refer to the name of the skill we will make that will later be used to generate design docs for this project. Default: `design-doc-skl`.
+Once you create the base design doc template and skill, you must ask questions to the user to help clarify anything you are unsure of.
 This is a **joint user–agent process**: ask targeted questions when unsure; do not finalize templates without user review.
 </objective>
 
@@ -23,34 +27,13 @@ Create (idempotent; do not overwrite without preserving history):
 - `design-docs/README.md` — How design docs are written, reviewed, and used for delegated execution.
 - `design-docs/templates/README.md` — Lists available templates and when to use them.
 - `design-docs/templates/base.md` — Meta "base" design doc template (guardrails + structure).
-- `design-docs/templates/<variant>.md` — Project-specific variants (e.g., `feature.md`, `etl_ingest.md`, `db_migration.md`).
-- `.{AGENT_NAME}/skills/design-doc-skl/SKILL.md` — The generated `$design-doc` skill.
-- `design-docs/agents/<design-doc-name>.xml` — Agent-executable subtasks (created after user approval).
+- `design-docs/templates/<variant>.md` — Project-specific design doc templates (e.g., `feature.md`, `etl_ingest.md`, `db_migration.md`).
+- `.{AGENT_NAME}/skills/design-doc-skl/SKILL.md` — The generated `${DESIGN_DOC_SKILL_NAME}-skl` skill.
 </file_list>
 
 <output_format>
 **Design docs are written in markdown** — not XML. Markdown is easier for humans to read/edit and for agents to parse during collaboration. Agent-executable subtasks use XML in a separate file under `design-docs/agents/`.
 </output_format>
-
-<subtask_workflow>
-Subtasks follow a **two-phase workflow**:
-
-**Phase 1: Human-Readable Subtasks (in main design doc)**
-- Add a "## Subtasks" section to the main design doc
-- List tasks as a human-readable markdown checklist
-- Collaborate with user to refine scope, order, and acceptance criteria
-- User reviews and approves the subtask list
-
-**Phase 2: Agent-Executable XML (after approval)**
-- Once user approves subtasks, generate `design-docs/agents/<design-doc-name>.xml`
-- XML file contains structured task definitions for agent delegation
-- Agents read only the XML file when executing tasks
-
-This separation allows:
-- Human-friendly iteration during planning (Phase 1)
-- Machine-parseable structure for execution (Phase 2)
-- Clear approval gate before agent work begins
-</subtask_workflow>
 
 <agent_name_resolution>
 Replace `{AGENT_NAME}` with the agent's config directory:
@@ -62,40 +45,48 @@ Replace `{AGENT_NAME}` with the agent's config directory:
 
 If the repo has an existing agent config directory, use it. If multiple exist, prefer the current agent's. If none exist, create one.
 </agent_name_resolution>
-
-<optional_output>
-If the repo uses "memories":
-- `.{AGENT_NAME}/memories/design_doc_conventions.md` — Repo-specific conventions discovered by scanning.
-</optional_output>
 </outputs>
 
 <preconditions>
 Before asking questions, scan the repo to ground defaults:
-
+If you have not already, run the $activate-skl skill to get an overview of the project.
 <scan_targets>
-1. **Languages/frameworks/build**: `pyproject.toml`, `package.json`, `Cargo.toml`, `go.mod`, `CMakeLists.txt`, `Makefile`, `justfile`, `requirements*.txt`
-2. **CI entrypoints**: `.github/workflows/*`, `tox.ini`, `noxfile.py`, `pytest.ini`, `ruff.toml`, `.pre-commit-config.yaml`
-3. **Utility modules**: `src/**/utils*`, `lib/**`, `internal/**`, `pkg/**`
-4. **DB/migrations**: `alembic`, `prisma`, `migrations/`, `db/`, `sql/`
-5. **Style rules**: `CONTRIBUTING.md`, `docs/`, `STYLE*`, `README.md`
+1. **Languages/frameworks/build files**
+2. **CI entrypoints**
+3. **Project Specific Utility modules**
+4. **DB/migrations**
+5. **Style rules**
 </scan_targets>
-
-Use `rg`, `find`, `ls`, `cat` (or equivalent). Do not guess if the repo reveals the answer.
 </preconditions>
+
+<generation_steps>
+1. **Create folder structure** (if missing):
+   - `design-docs/`
+   - `design-docs/templates/`
+   - `design-docs/active/`
+   - `design-docs/agents/`
+
+2. **Write design doc template and skill if they do not exist**:
+   - `design-docs/README.md` (workflow + approvals)
+   - `design-docs/templates/README.md` (template index)
+   - `design-docs/templates/{DESIGN_DOC_SKILL_NAME}.md` (meta template with guardrails)
+    - `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/SKILL.md`
+
+3. **Generate the `${DESIGN_DOC_SKILL_NAME}-skl` skill** at `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}-skl/SKILL.md`:
+
+4. **Run Adaptive Questioning Protocol**:
+   - Produce "Detected Defaults Summary"
+   - Ask triggered questions
+   - Stop for answers before proceeding
+
+5. **Idempotency**:
+   - Never overwrite existing templates without timestamped backup
+   - Add new variants to `design-docs/templates/README.md`
+</generation_steps>
+
 
 <questioning_protocol>
 Ask only questions that materially influence template contents.
-
-<scan_first>
-After scanning, present a "Detected Defaults Summary":
-- Detected stack (language(s), frameworks)
-- Detected test runner + primary local command(s)
-- Detected formatter/linter + command(s)
-- Detected CI gates (jobs / required checks)
-- Detected DB/migrations tooling (if any)
-- Detected network dependencies (HTTP/WS libs) and existing harness/fixtures patterns
-- Notable existing utilities to reuse (paths + symbols if obvious)
-</scan_first>
 
 <question_tags>
 Every question must be tagged:
@@ -113,7 +104,6 @@ Every question must be tagged:
 Ask only what applies based on scan:
 - Migrations tooling detected → ask DB reset/backfill/rollback/testing policy
 - HTTP/WS dependencies detected → ask record/replay + fixture storage constraints
-- Multiple languages detected → ask which is authoritative for templates
 - Monorepo structure detected → ask where templates live and how commands differ
 - No tests/CI detected → ask what canonical verification commands should be
 </triggered_questions>
@@ -131,7 +121,7 @@ Stop and ask for `[blocking]` answers before proceeding.
 
 <common_questions>
 Ask only what you cannot infer from the scan:
-
+<question_examples>
 1. `[blocking]` **Template variants desired**
    - "Which templates do you want generated? (e.g., `feature`, `etl_http_ws`, `db_migration`, `refactor`)"
    - Why: determines `design-docs/templates/*.md` set.
@@ -149,12 +139,13 @@ Ask only what you cannot infer from the scan:
    - Why: prevents unsafe "delete DB to pass tests" behavior.
 
 5. `[important]` **Type discipline**
-   - "What's your stance on Optional/None? (forbid unless justified; require invalid states unrepresentable)"
+   - "For Python projects, what is your stance on Optional/None? (forbid unless justified; require invalid states unrepresentable)"
    - Why: shapes interface-contract requirements.
 
 6. `[important]` **Review workflow**
    - "Stop at Template Delta Preview for approval, or write files and you review diffs?"
    - Why: controls collaboration checkpoint.
+</question_examples>
 </common_questions>
 
 <base_template_sections>
@@ -167,13 +158,15 @@ The base template MUST include these sections (in order):
 5. Requirements (FRs / NFRs)
 6. Constraints and invariants (include DB + test integrity)
 7. Proposed design (architecture, contracts, schemas, idempotency/retries)
-8. Interface contracts (explicit signatures; Optional/None justification required)
-9. Alternatives considered (>=2 + "do nothing")
-10. Test data acquisition plan (mandatory for external I/O / ETL)
-11. Testing and verification strategy (commands + CI gates + test integrity rules)
-12. Rollout / migration / ops (flags, backfills, observability, runbook)
-13. **Subtasks** (human-readable checklist for review)
-14. Open questions / follow-ups
+8. Project common utilities that will be used.
+9. Project common utilities that will be created.
+10. Interface contracts (explicit signatures; Optional/None justification required)
+11. Alternatives considered (>=2)
+12. Test data acquisition plan (mandatory for external I/O / ETL)
+13. Testing and verification strategy (commands + CI gates + test integrity rules)
+14. Rollout / migration / ops (flags, backfills, observability, runbook)
+15. Open questions / follow-ups
+16. **Subtasks** (human-readable checklist for review)
 
 **Subtasks Section Format**:
 ```markdown
@@ -188,12 +181,10 @@ The base template MUST include these sections (in order):
 ### T2: [Task Title]
 ...
 ```
-
-After user approves subtasks, generate `design-docs/agents/<design-doc-name>.xml` with the full XML schema.
 </base_template_sections>
 
 <guardrails>
-Include verbatim in base + project templates under "Engineering Guardrails for Agent Execution":
+Include verbatim in the design doc skill you create under "Engineering Guardrails for Agent Execution":
 
 - **Reuse-first rule** (anti-duplication): search existing utilities; record decision per task.
 - **No destructive shortcuts**: never delete dev/prod data to pass tests; destructive actions require confirmation.
@@ -203,49 +194,12 @@ Include verbatim in base + project templates under "Engineering Guardrails for A
 - **Uncertainty protocol**: ask `[blocking]` questions when unsure; do not proceed.
 </guardrails>
 
-<generation_steps>
-1. **Create folder structure** (if missing):
-   - `design-docs/`
-   - `design-docs/templates/`
-   - `design-docs/active/`
-   - `design-docs/agents/`
-
-2. **Write base docs**:
-   - `design-docs/README.md` (workflow + approvals)
-   - `design-docs/templates/README.md` (template index)
-   - `design-docs/templates/base.md` (meta template with guardrails)
-
-3. **Run Adaptive Questioning Protocol**:
-   - Produce "Detected Defaults Summary"
-   - Ask triggered questions
-
-4. **Show Template Delta Preview**:
-   - Stop for `[blocking]` answers before proceeding
-
-5. **Generate project-specific template variant(s)**:
-   - Insert repo-specific commands (tests, lint, format, typecheck)
-   - Insert repo-specific DB migration/testing norms (if applicable)
-   - Add "Common utilities" section referencing discovered paths/patterns
-   - Encode variant-specific sections (e.g., ETL templates emphasize fixtures)
-
-6. **Generate the `$design-doc` skill** at `.{AGENT_NAME}/skills/design-doc-skl/SKILL.md`:
-   - Prompts user to select a template variant
-   - Creates main doc at `design-docs/active/YYYYMMDD-<slug>.md` with human-readable subtasks section
-   - Enforces guardrails
-   - Requires test-data plan for external I/O
-   - Includes uncertainty protocol
-   - **After user approves subtasks**: generates `design-docs/agents/<design-doc-name>.xml`
-   - Include knowledge about the `$subplan-skl` skill to generate agent and agent friendly version of the design document.
-7. **Idempotency**:
-   - Never overwrite existing templates without timestamped backup
-   - Add new variants to `design-docs/templates/README.md`
-</generation_steps>
 
 <completion_criteria>
 - `design-docs/` exists with README + templates index + `agents/` subdirectory
 - `base.md` includes guardrails and human-readable subtasks section format
 - At least one project-specific template variant exists with repo-specific test commands
-- `$design-doc` skill exists and references templates correctly
+- `${DESIGN_DOC_SKILL_NAME}-skl` skill exists and references templates correctly
 - Skill workflow: human-readable subtasks in main doc → user approval → XML in `design-docs/agents/`
 </completion_criteria>
 

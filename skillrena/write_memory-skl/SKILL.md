@@ -51,7 +51,7 @@ description: Skillrena repo purpose and structure
 
 <decision_points>
 - Existing memory? Update if the info is the same topic; otherwise create a new file.
-- Multiple small notes? Consolidate into one concise memory.
+- Multiple small notes? Consolidate into one concise memory. If you see more than 10 memories it is a good idea to consolidate them into 5 memories.
 </decision_points>
 
 <quality_checklist>
