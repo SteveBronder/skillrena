@@ -1,6 +1,5 @@
 ---
 name: plan-plan
-command: $plan-plan
 description: Meta-skill that bootstraps the repo's design-doc workflow and generates a project-specific design doc skill plus templates under `design-docs/`.
 ---
 

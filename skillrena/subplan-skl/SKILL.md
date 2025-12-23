@@ -1,6 +1,5 @@
 ---
-name: plan-plan
-command: $plan-plan
+name: subplan-skl
 description: Take a design document and turn it into agent friendly xml
 ---
 
