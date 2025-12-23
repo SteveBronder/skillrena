@@ -13,7 +13,7 @@ Serena is great - it gives agents deep project understanding through MCP servers
 | Serena | ~50k+ tokens | MCP server required |
 | Skillrena | ~9k tokens (all skills) | Copy some files, done |
 
-That's it. Running `$activate-skl` to load your project memories adds about 9k more. Still leaves plenty of room for actual work.
+That's it. Running `$activate-skl` to load your project memories adds about ~9k tokens in total. Still leaves plenty of room for actual work.
 
 While serana also comes with a language server, agent cli's like claude now come with their own language servers, so that means we can focus on just keeping track of memories surrounding the projects goals.
 ### The Numbers
