@@ -13,7 +13,7 @@ Serena is great - it gives agents deep project understanding through MCP servers
 | Serena | ~50k+ tokens | MCP server required |
 | Skillrena | ~9k tokens (all skills) | Copy some files, done |
 
-That's it. Running `$activate-skl` to load your project memories adds about ~9k tokens in total. Still leaves plenty of room for actual work.
+That's it. Running `$activating-memories` to load your project memories adds about ~9k tokens in total. Still leaves plenty of room for actual work.
 
 While serana also comes with a language server, agent cli's like claude now come with their own language servers, so that means we can focus on just keeping track of memories surrounding the projects goals.
 ### The Numbers
@@ -21,25 +21,20 @@ While serana also comes with a language server, agent cli's like claude now come
 Using claude's `/context` command we can get an idea of how many tokens these skils all require when each is read in full.
 
 ```
- activate-skl · ~791 tokens
- diary-skl · ~189 tokens
- mode-no-memories-ski · ~168 tokens
- mode-interactive-ski · ~161 tokens
- mode-one-shot-ski · ~180 tokens
- mode-planning-ski · ~158 tokens
- mode-editing-ski · ~165 tokens
- onboarding-skl · ~617 tokens
- plan-plan · ~3.1k tokens
- switch_modes-skl · ~150 tokens
- write_memory-skl · ~466 tokens
+ activating-memories · ~800 tokens
+ writing-memories · ~500 tokens
+ recording-diary · ~200 tokens
+ switching-modes · ~200 tokens (+ ~150 per mode asset)
+ bootstrapping-design-docs · ~3.1k tokens
+ generating-subtasks · ~600 tokens
 ```
 
-The `plan-plan` and `activate-skl` skills are meta skills which will be used for a session for setup. Then it is assumed the user will clear the context after they are done.
+The `bootstrapping-design-docs` and `activating-memories` skills are meta skills which will be used for a session for setup. Then it is assumed the user will clear the context after they are done.
 
 
 ### Before/After Activation
 
-Here is a before and after of claude's `/context` when we activate skillrena via `$activate-skl`
+Here is a before and after of claude's `/context` when we activate skillrena via `$activating-memories`
 
 ```
 > /context
@@ -52,11 +47,11 @@ Here is a before and after of claude's `/context` when we activate skillrena via
      ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ Custom agents: 2.6k tokens (1.3%)
      ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ Messages: 345 tokens (0.2%)
      ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛶ Free space: 130k (65.0%)
-     ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛝ ⛝ ⛝   ⛝ Autocompact buffer: 45.0k tokens (22.5%)
+     ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛝ ⛝   ⛝ Autocompact buffer: 45.0k tokens (22.5%)
      ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝
      ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝
 
-> $activate-skl
+> $activating-memories
 > /context
   ⎿
       Context Usage
@@ -67,7 +62,7 @@ Here is a before and after of claude's `/context` when we activate skillrena via
      ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ Custom agents: 2.6k tokens (1.3%)
      ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ Messages: 8.8k tokens (4.4%)
      ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛶ Free space: 121k (60.7%)
-     ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛝ ⛝ ⛝   ⛝ Autocompact buffer: 45.0k tokens (22.5%)
+     ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛝ ⛝   ⛝ Autocompact buffer: 45.0k tokens (22.5%)
      ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝
      ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝
 ```
@@ -90,7 +85,7 @@ There is no nice way to share skills at the moment. So we provide a script to co
 ```
 
 
-To remove the skills call the script below. This will delete all folders in `~/.{AGENT_NAME}/skills/skillrena` and skills that end in `-skl`
+To remove the skills call the script below. This will delete all Skillrena skills from both agent directories.
 
 ```bash
 ./scripts/remove_skills.sh
@@ -100,27 +95,27 @@ To remove the skills call the script below. This will delete all folders in `~/.
 - Codex doesn't do symlinks, so we have to hard copy in the agent's folder. :(
 - Once codex fixes that then we will just symlink the skills in this folder into the codex directory.
 - While codex allows for subfolders in the skills folder, claude does not. So the directory structure for codex will differ.
-    - `.codex/skills/skillrena/*-skl/`
-    - `.claude/skills/*-skl/`
+    - `.codex/skills/skillrena/<skill-name>/`
+    - `.claude/skills/<skill-name>/`
 
 ## Skill Overview
 
-### `$activate-skl`: Give the agent background information
+### `$activating-memories`: Give the agent background information
 
-When entering a project, call `$activate-skl` to either have the agent write memory skills in `.{AGENT_NAME}/skills/memories` or to skim the memories if they already exist.
+When entering a project, call `$activating-memories` to either have the agent write memory skills in `.{AGENT_NAME}/skills/memories` or to skim the memories if they already exist.
 
 ```
-$activate-skl
+$activating-memories
 ```
 
 The agent reads your codebase and creates memories about what the project does, how to build it, your coding style.
 
 **For the agents reading this**: `{AGENT_NAME}` in the skill files becomes `claude` or `codex` depending on which CLI is running. So `.{AGENT_NAME}/skills/memories/` turns into `.claude/skills/memories/` for Claude Code.
 
-### `$switch_modes-skl`: Switch modes for certain tasks
+### `$switching-modes`: Switch modes for certain tasks
 
 ```
-$switch_modes-skl <mode>
+$switching-modes <mode>
 ```
 
 | Mode | When | What It Does |
@@ -131,12 +126,12 @@ $switch_modes-skl <mode>
 | `one-shot` | You know exactly what you want | Whomst amonst us  |
 | `no-memories` | Testing, one-off stuff | Forget everything and start fresh |
 
-### `$diary-skl`: Save what the agent learned this session
+### `$recording-diary`: Save what the agent learned this session
 
 Before you close out or the context gets compacted call the diary for the llm to leave a little note to the next agent.
 
 ```
-$diary-skl
+$recording-diary
 ```
 
 Writes down the gotchas, workarounds, and "oh that's how that works" moments for next time.
@@ -150,15 +145,15 @@ If you're on Claude Code, check out [hookify](https://github.com/anthropics/clau
 Example - no commits without tests:
 
 ```
-/hookify:hookify "Before compaction, add a hook that will call the diary-skl skill"
+/hookify:hookify "Before compaction, add a hook that will call the recording-diary skill"
 ```
 
-### `$plan-plan-skl`: Write a design doc template for your project
+### `$bootstrapping-design-docs`: Write a design doc template for your project
 
-For multi-file features or complex changes, use `$plan-plan-skl` to bootstrap a design-doc workflow in your repo:
+For multi-file features or complex changes, use `$bootstrapping-design-docs` to bootstrap a design-doc workflow in your repo:
 
 ```
-$plan-plan-skl
+$bootstrapping-design-docs
 ```
 
 This creates:
@@ -183,7 +178,7 @@ Best for: Multi-file features, refactors, anything touching external APIs/databa
 
 Skip for: Quick fixes, single-file changes, exploratory work
 
-### `$subplan-skl`: Make agent friendly version of a design doc
+### `$generating-subtasks`: Make agent friendly version of a design doc
 
 This skill takes a design document made with `$design-doc` and translates it into an agent friendly set of subtasks.
 

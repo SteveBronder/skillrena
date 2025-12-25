@@ -1,17 +1,38 @@
-for d in ./skillrena/*-skl/ ./skillrena/*-ski/; do
-  [ -d "$d" ] || continue
+#!/bin/bash
+# Remove Skillrena skills from agent directories
 
-  skill_name="$(basename "$d")"
+SKILLS=(
+  "activating-memories"
+  "writing-memories"
+  "recording-diary"
+  "switching-modes"
+  "bootstrapping-design-docs"
+  "generating-subtasks"
+)
 
-  target_dir="$HOME/.codex/skills/$skill_name"
+for skill in "${SKILLS[@]}"; do
+  # Remove from Codex
+  target_dir="$HOME/.codex/skills/skillrena/$skill"
   if [ -d "$target_dir" ]; then
     echo "Removing: $target_dir"
     rm -rf -- "$target_dir"
   fi
 
-  target_dir="$HOME/.claude/skills/$skill_name"
+  # Remove from Claude Code
+  target_dir="$HOME/.claude/skills/$skill"
   if [ -d "$target_dir" ]; then
     echo "Removing: $target_dir"
     rm -rf -- "$target_dir"
   fi
 done
+
+# Also remove old-style skills if present (for migration)
+for d in "$HOME/.codex/skills/skillrena/"*-skl "$HOME/.codex/skills/skillrena/"*-ski \
+         "$HOME/.claude/skills/"*-skl "$HOME/.claude/skills/"*-ski; do
+  if [ -d "$d" ]; then
+    echo "Removing old skill: $d"
+    rm -rf -- "$d"
+  fi
+done
+
+echo "Skills removed."

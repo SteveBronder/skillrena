@@ -1,0 +1,681 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<design-doc-tasks>
+  <metadata>
+    <design-doc>20251223-skill-consolidation.md</design-doc>
+    <created>2025-12-24</created>
+    <approved-by>Steve</approved-by>
+  </metadata>
+
+  <task id="T1-create-skill-directories" owner="unassigned" status="planned">
+    <summary>Create the 6 new skill directories with proper structure and SKILL.md files.</summary>
+
+    <scope>
+      <in>Creating directories: activating-memories/, writing-memories/, recording-diary/, switching-modes/, bootstrapping-design-docs/, generating-subtasks/. Writing SKILL.md files with updated names and descriptions.</in>
+      <out>Updating scripts, deleting old skills, creating reference/asset subdirectories (handled in T2/T3).</out>
+    </scope>
+
+    <reuse_check>
+      <search_terms>
+        <term>SKILL.md template</term>
+        <term>skill directory structure</term>
+      </search_terms>
+      <existing_utilities>
+        <candidate>skillrena/activate-skl/SKILL.md::content structure</candidate>
+        <candidate>skillrena/write_memory-skl/SKILL.md::YAML frontmatter format</candidate>
+      </existing_utilities>
+      <decision>reuse</decision>
+      <justification>Existing SKILL.md files provide the content to migrate; just need renaming and description updates.</justification>
+    </reuse_check>
+
+    <interfaces>
+      <exports>
+        <function name="N/A - file creation only">
+          <signature>N/A</signature>
+          <types>
+            <param name="N/A">N/A</param>
+            <returns>N/A</returns>
+          </types>
+          <invariants>
+            <invariant>Each SKILL.md must have name field matching directory name</invariant>
+            <invariant>Each description must include WHAT and WHEN</invariant>
+          </invariants>
+          <optionals>
+            <allowed>false</allowed>
+            <justification>N/A</justification>
+          </optionals>
+        </function>
+      </exports>
+    </interfaces>
+
+    <implementation_plan>
+      <step>Create skillrena/activating-memories/ directory</step>
+      <step>Create skillrena/writing-memories/ directory</step>
+      <step>Create skillrena/recording-diary/ directory</step>
+      <step>Create skillrena/switching-modes/ directory</step>
+      <step>Create skillrena/bootstrapping-design-docs/ directory</step>
+      <step>Create skillrena/generating-subtasks/ directory</step>
+      <step>Write SKILL.md for activating-memories with updated description from design doc</step>
+      <step>Write SKILL.md for writing-memories migrating content from write_memory-skl</step>
+      <step>Write SKILL.md for recording-diary migrating content from diary-skl</step>
+      <step>Write SKILL.md for switching-modes with brief main content (modes in assets)</step>
+      <step>Write SKILL.md for bootstrapping-design-docs migrating content from plan-plan-skl</step>
+      <step>Write SKILL.md for generating-subtasks migrating content from subplan-skl</step>
+    </implementation_plan>
+
+    <test_data>
+      <required>false</required>
+      <source>file</source>
+      <gap_analysis>N/A - file creation task</gap_analysis>
+      <plan>Manual verification of directory structure</plan>
+      <fixture_paths>
+        <path>N/A</path>
+      </fixture_paths>
+      <validation>
+        <check>ls skillrena/ shows 6 new directories</check>
+        <check>Each SKILL.md has valid YAML frontmatter</check>
+      </validation>
+    </test_data>
+
+    <tests>
+      <add>
+        <test_file>N/A - manual verification</test_file>
+        <assertion>All 6 skill directories exist with SKILL.md files</assertion>
+      </add>
+    </tests>
+
+    <commands>
+      <cmd>mkdir -p skillrena/activating-memories skillrena/writing-memories skillrena/recording-diary skillrena/switching-modes skillrena/bootstrapping-design-docs skillrena/generating-subtasks</cmd>
+      <cmd>ls skillrena/</cmd>
+      <cmd>head -10 skillrena/*/SKILL.md</cmd>
+    </commands>
+
+    <acceptance>
+      <criterion>Passes when ls skillrena/ shows all 6 new directories: activating-memories, writing-memories, recording-diary, switching-modes, bootstrapping-design-docs, generating-subtasks</criterion>
+      <criterion>Passes when each SKILL.md has name field matching directory name</criterion>
+      <criterion>Passes when each description includes both WHAT and WHEN per design doc table</criterion>
+    </acceptance>
+
+    <task_completed_status>false</task_completed_status>
+
+    <safety>
+      <destructive_actions>false</destructive_actions>
+      <notes>Creating new directories only; old skills not deleted until T6.</notes>
+    </safety>
+  </task>
+
+  <task id="T2-migrate-mode-assets" owner="unassigned" status="planned">
+    <summary>Move 5 mode-*-ski skills to switching-modes/assets/ directory.</summary>
+
+    <scope>
+      <in>Creating switching-modes/assets/ directory. Creating editing.md, interactive.md, no-memories.md, one-shot.md, planning.md with content from mode-*-ski skills.</in>
+      <out>Deleting original mode-*-ski directories (handled in T6). Modifying mode behavior.</out>
+    </scope>
+
+    <reuse_check>
+      <search_terms>
+        <term>mode-editing-ski</term>
+        <term>mode-interactive-ski</term>
+        <term>mode behavior</term>
+      </search_terms>
+      <existing_utilities>
+        <candidate>skillrena/mode-editing-ski/SKILL.md::mode content</candidate>
+        <candidate>skillrena/mode-interactive-ski/SKILL.md::mode content</candidate>
+        <candidate>skillrena/mode-no-memories-ski/SKILL.md::mode content</candidate>
+        <candidate>skillrena/mode-one-shot-ski/SKILL.md::mode content</candidate>
+        <candidate>skillrena/mode-planning-ski/SKILL.md::mode content</candidate>
+      </existing_utilities>
+      <decision>reuse</decision>
+      <justification>Direct content migration from existing mode skills; remove YAML frontmatter since these become plain markdown assets.</justification>
+    </reuse_check>
+
+    <interfaces>
+      <exports>
+        <function name="N/A - file migration only">
+          <signature>N/A</signature>
+          <types>
+            <param name="N/A">N/A</param>
+            <returns>N/A</returns>
+          </types>
+          <invariants>
+            <invariant>Asset files must not have YAML frontmatter (not standalone skills)</invariant>
+            <invariant>Mode behavior must be preserved exactly</invariant>
+          </invariants>
+          <optionals>
+            <allowed>false</allowed>
+            <justification>N/A</justification>
+          </optionals>
+        </function>
+      </exports>
+    </interfaces>
+
+    <implementation_plan>
+      <step>Create skillrena/switching-modes/assets/ directory</step>
+      <step>Read skillrena/mode-editing-ski/SKILL.md and extract content after frontmatter</step>
+      <step>Write content to skillrena/switching-modes/assets/editing.md</step>
+      <step>Repeat for mode-interactive-ski -> interactive.md</step>
+      <step>Repeat for mode-no-memories-ski -> no-memories.md</step>
+      <step>Repeat for mode-one-shot-ski -> one-shot.md</step>
+      <step>Repeat for mode-planning-ski -> planning.md</step>
+      <step>Update switching-modes/SKILL.md to reference assets/ files</step>
+    </implementation_plan>
+
+    <test_data>
+      <required>false</required>
+      <source>file</source>
+      <gap_analysis>N/A - file migration task</gap_analysis>
+      <plan>Compare content between old and new locations</plan>
+      <fixture_paths>
+        <path>N/A</path>
+      </fixture_paths>
+      <validation>
+        <check>ls skillrena/switching-modes/assets/ shows 5 .md files</check>
+        <check>diff content matches (minus frontmatter)</check>
+      </validation>
+    </test_data>
+
+    <tests>
+      <add>
+        <test_file>N/A - manual verification</test_file>
+        <assertion>All 5 mode assets exist with correct content</assertion>
+      </add>
+    </tests>
+
+    <commands>
+      <cmd>mkdir -p skillrena/switching-modes/assets</cmd>
+      <cmd>ls skillrena/switching-modes/assets/</cmd>
+    </commands>
+
+    <acceptance>
+      <criterion>Passes when ls skillrena/switching-modes/assets/ shows: editing.md, interactive.md, no-memories.md, one-shot.md, planning.md</criterion>
+      <criterion>Passes when each asset file contains the mode behavior content without YAML frontmatter</criterion>
+    </acceptance>
+
+    <task_completed_status>false</task_completed_status>
+
+    <safety>
+      <destructive_actions>false</destructive_actions>
+      <notes>Creating new files only; original mode-*-ski directories preserved until T6.</notes>
+    </safety>
+  </task>
+
+  <task id="T3-migrate-onboarding-reference" owner="unassigned" status="planned">
+    <summary>Move onboarding-skl content to activating-memories/references/ directory.</summary>
+
+    <scope>
+      <in>Creating activating-memories/references/ directory. Creating onboarding-guide.md with content from onboarding-skl.</in>
+      <out>Deleting original onboarding-skl directory (handled in T6). Modifying onboarding behavior.</out>
+    </scope>
+
+    <reuse_check>
+      <search_terms>
+        <term>onboarding-skl</term>
+        <term>onboarding content</term>
+      </search_terms>
+      <existing_utilities>
+        <candidate>skillrena/onboarding-skl/SKILL.md::full onboarding instructions</candidate>
+      </existing_utilities>
+      <decision>reuse</decision>
+      <justification>Direct content migration; remove YAML frontmatter since this becomes a reference file.</justification>
+    </reuse_check>
+
+    <interfaces>
+      <exports>
+        <function name="N/A - file migration only">
+          <signature>N/A</signature>
+          <types>
+            <param name="N/A">N/A</param>
+            <returns>N/A</returns>
+          </types>
+          <invariants>
+            <invariant>Reference file must not have YAML frontmatter</invariant>
+            <invariant>Onboarding instructions must be preserved exactly</invariant>
+          </invariants>
+          <optionals>
+            <allowed>false</allowed>
+            <justification>N/A</justification>
+          </optionals>
+        </function>
+      </exports>
+    </interfaces>
+
+    <implementation_plan>
+      <step>Create skillrena/activating-memories/references/ directory</step>
+      <step>Read skillrena/onboarding-skl/SKILL.md and extract content after frontmatter</step>
+      <step>Write content to skillrena/activating-memories/references/onboarding-guide.md</step>
+      <step>Update activating-memories/SKILL.md to reference onboarding-guide.md when memories missing</step>
+    </implementation_plan>
+
+    <test_data>
+      <required>false</required>
+      <source>file</source>
+      <gap_analysis>N/A - file migration task</gap_analysis>
+      <plan>Compare content between old and new locations</plan>
+      <fixture_paths>
+        <path>N/A</path>
+      </fixture_paths>
+      <validation>
+        <check>File exists at activating-memories/references/onboarding-guide.md</check>
+        <check>Content matches original (minus frontmatter)</check>
+      </validation>
+    </test_data>
+
+    <tests>
+      <add>
+        <test_file>N/A - manual verification</test_file>
+        <assertion>Onboarding guide reference file exists with correct content</assertion>
+      </add>
+    </tests>
+
+    <commands>
+      <cmd>mkdir -p skillrena/activating-memories/references</cmd>
+      <cmd>ls skillrena/activating-memories/references/</cmd>
+    </commands>
+
+    <acceptance>
+      <criterion>Passes when skillrena/activating-memories/references/onboarding-guide.md exists</criterion>
+      <criterion>Passes when file contains full onboarding instructions without YAML frontmatter</criterion>
+    </acceptance>
+
+    <task_completed_status>false</task_completed_status>
+
+    <safety>
+      <destructive_actions>false</destructive_actions>
+      <notes>Creating new files only; original onboarding-skl directory preserved until T6.</notes>
+    </safety>
+  </task>
+
+  <task id="T4-update-scripts" owner="unassigned" status="planned">
+    <summary>Update cp_skills.sh and remove_skills.sh for new directory structure.</summary>
+
+    <scope>
+      <in>Modifying scripts/cp_skills.sh to copy new skill names and handle subdirectories (references/, assets/). Modifying scripts/remove_skills.sh to remove new skill names.</in>
+      <out>Changing script behavior beyond skill installation/removal.</out>
+    </scope>
+
+    <reuse_check>
+      <search_terms>
+        <term>cp_skills.sh</term>
+        <term>remove_skills.sh</term>
+        <term>skill installation</term>
+      </search_terms>
+      <existing_utilities>
+        <candidate>scripts/cp_skills.sh::current installation logic</candidate>
+        <candidate>scripts/remove_skills.sh::current removal logic</candidate>
+      </existing_utilities>
+      <decision>extend</decision>
+      <justification>Existing scripts provide the pattern; need to update for new names and handle subdirectories.</justification>
+    </reuse_check>
+
+    <interfaces>
+      <exports>
+        <function name="cp_skills.sh">
+          <signature>./scripts/cp_skills.sh</signature>
+          <types>
+            <param name="none">no arguments</param>
+            <returns>exit 0 on success</returns>
+          </types>
+          <invariants>
+            <invariant>Must copy all 6 skills with subdirectories intact</invariant>
+            <invariant>Must handle both Claude Code and Codex paths</invariant>
+          </invariants>
+          <optionals>
+            <allowed>false</allowed>
+            <justification>N/A</justification>
+          </optionals>
+        </function>
+        <function name="remove_skills.sh">
+          <signature>./scripts/remove_skills.sh</signature>
+          <types>
+            <param name="none">no arguments</param>
+            <returns>exit 0 on success</returns>
+          </types>
+          <invariants>
+            <invariant>Must remove all 6 new skill directories</invariant>
+            <invariant>Must handle both Claude Code and Codex paths</invariant>
+          </invariants>
+          <optionals>
+            <allowed>false</allowed>
+            <justification>N/A</justification>
+          </optionals>
+        </function>
+      </exports>
+    </interfaces>
+
+    <implementation_plan>
+      <step>Update cp_skills.sh to use new skill directory names instead of *-skl/*-ski globs</step>
+      <step>Ensure cp -r preserves subdirectory structure (references/, assets/)</step>
+      <step>Update remove_skills.sh to iterate over new skill names</step>
+      <step>Test installation to ~/.claude/skills/</step>
+      <step>Test installation to ~/.codex/skills/skillrena/</step>
+      <step>Test removal from both locations</step>
+    </implementation_plan>
+
+    <test_data>
+      <required>false</required>
+      <source>file</source>
+      <gap_analysis>N/A - script modification task</gap_analysis>
+      <plan>Run scripts and verify results</plan>
+      <fixture_paths>
+        <path>N/A</path>
+      </fixture_paths>
+      <validation>
+        <check>cp_skills.sh copies all skills with subdirectories</check>
+        <check>remove_skills.sh removes all skills</check>
+      </validation>
+    </test_data>
+
+    <tests>
+      <add>
+        <test_file>N/A - manual verification</test_file>
+        <assertion>Scripts correctly handle new skill structure</assertion>
+      </add>
+    </tests>
+
+    <commands>
+      <cmd>./scripts/cp_skills.sh</cmd>
+      <cmd>ls ~/.claude/skills/</cmd>
+      <cmd>ls ~/.claude/skills/switching-modes/assets/</cmd>
+      <cmd>ls ~/.claude/skills/activating-memories/references/</cmd>
+      <cmd>./scripts/remove_skills.sh</cmd>
+      <cmd>ls ~/.claude/skills/</cmd>
+    </commands>
+
+    <acceptance>
+      <criterion>Passes when ./scripts/cp_skills.sh installs all 6 skills with subdirectories to ~/.claude/skills/</criterion>
+      <criterion>Passes when ./scripts/cp_skills.sh installs all 6 skills to ~/.codex/skills/skillrena/</criterion>
+      <criterion>Passes when ./scripts/remove_skills.sh removes all installed skills</criterion>
+      <criterion>Passes when ls ~/.claude/skills/switching-modes/assets/ shows 5 mode files after install</criterion>
+    </acceptance>
+
+    <task_completed_status>false</task_completed_status>
+
+    <safety>
+      <destructive_actions>true</destructive_actions>
+      <notes>remove_skills.sh deletes installed skills. Scripts should only operate on known skill directories, not arbitrary user data.</notes>
+    </safety>
+  </task>
+
+  <task id="T5-update-documentation" owner="unassigned" status="planned">
+    <summary>Update readme.md with new skill names and invocation commands.</summary>
+
+    <scope>
+      <in>Updating readme.md skill references, command examples, and token counts. Updating any skill name references in docs/.</in>
+      <out>Changing design doc workflow. Updating specification or best practices docs.</out>
+    </scope>
+
+    <reuse_check>
+      <search_terms>
+        <term>activate-skl</term>
+        <term>switch_modes-skl</term>
+        <term>skill invocation</term>
+      </search_terms>
+      <existing_utilities>
+        <candidate>readme.md::current documentation</candidate>
+      </existing_utilities>
+      <decision>extend</decision>
+      <justification>Existing readme structure is good; just need to update skill names and commands.</justification>
+    </reuse_check>
+
+    <interfaces>
+      <exports>
+        <function name="N/A - documentation only">
+          <signature>N/A</signature>
+          <types>
+            <param name="N/A">N/A</param>
+            <returns>N/A</returns>
+          </types>
+          <invariants>
+            <invariant>All skill references must use new names</invariant>
+            <invariant>Command examples must be runnable</invariant>
+          </invariants>
+          <optionals>
+            <allowed>false</allowed>
+            <justification>N/A</justification>
+          </optionals>
+        </function>
+      </exports>
+    </interfaces>
+
+    <implementation_plan>
+      <step>Search readme.md for all occurrences of old skill names</step>
+      <step>Replace $activate-skl with $activating-memories</step>
+      <step>Replace $switch_modes-skl with $switching-modes</step>
+      <step>Replace $write_memory-skl with $writing-memories</step>
+      <step>Replace $diary-skl with $recording-diary</step>
+      <step>Replace $plan-plan-skl with $bootstrapping-design-docs</step>
+      <step>Replace $subplan-skl with $generating-subtasks</step>
+      <step>Update token counts section with new skill names</step>
+      <step>Update mode table to reference switching-modes</step>
+      <step>Verify all command examples are correct</step>
+    </implementation_plan>
+
+    <test_data>
+      <required>false</required>
+      <source>file</source>
+      <gap_analysis>N/A - documentation task</gap_analysis>
+      <plan>grep for old skill names to verify none remain</plan>
+      <fixture_paths>
+        <path>N/A</path>
+      </fixture_paths>
+      <validation>
+        <check>No old skill names remain in readme.md</check>
+        <check>All new skill names are documented</check>
+      </validation>
+    </test_data>
+
+    <tests>
+      <add>
+        <test_file>N/A - manual verification</test_file>
+        <assertion>All documentation uses new skill names</assertion>
+      </add>
+    </tests>
+
+    <commands>
+      <cmd>grep -E "(activate-skl|switch_modes-skl|write_memory-skl|diary-skl|plan-plan-skl|subplan-skl|mode-.*-ski)" readme.md</cmd>
+      <cmd>grep -E "(activating-memories|switching-modes|writing-memories|recording-diary|bootstrapping-design-docs|generating-subtasks)" readme.md</cmd>
+    </commands>
+
+    <acceptance>
+      <criterion>Passes when grep for old skill names in readme.md returns no results</criterion>
+      <criterion>Passes when all 6 new skill names appear in readme.md</criterion>
+      <criterion>Passes when command examples use new syntax ($activating-memories, $switching-modes editing, etc.)</criterion>
+    </acceptance>
+
+    <task_completed_status>false</task_completed_status>
+
+    <safety>
+      <destructive_actions>false</destructive_actions>
+      <notes>Documentation changes only.</notes>
+    </safety>
+  </task>
+
+  <task id="T6-delete-old-skills" owner="unassigned" status="planned">
+    <summary>Remove all *-skl and *-ski directories from skillrena/.</summary>
+
+    <scope>
+      <in>Deleting skillrena/activate-skl/, onboarding-skl/, write_memory-skl/, diary-skl/, switch_modes-skl/, plan-plan-skl/, subplan-skl/, and all mode-*-ski/ directories.</in>
+      <out>Modifying git history. Removing installed skills from user directories.</out>
+    </scope>
+
+    <reuse_check>
+      <search_terms>
+        <term>N/A</term>
+      </search_terms>
+      <existing_utilities>
+        <candidate>N/A</candidate>
+      </existing_utilities>
+      <decision>new</decision>
+      <justification>Simple deletion task; no utilities needed.</justification>
+    </reuse_check>
+
+    <interfaces>
+      <exports>
+        <function name="N/A - deletion only">
+          <signature>N/A</signature>
+          <types>
+            <param name="N/A">N/A</param>
+            <returns>N/A</returns>
+          </types>
+          <invariants>
+            <invariant>Only delete after T1-T5 complete and verified</invariant>
+            <invariant>Must not delete new skill directories</invariant>
+          </invariants>
+          <optionals>
+            <allowed>false</allowed>
+            <justification>N/A</justification>
+          </optionals>
+        </function>
+      </exports>
+    </interfaces>
+
+    <implementation_plan>
+      <step>Verify T1-T5 are complete (all new skills exist and work)</step>
+      <step>List all *-skl and *-ski directories to confirm what will be deleted</step>
+      <step>Delete skillrena/activate-skl/</step>
+      <step>Delete skillrena/onboarding-skl/</step>
+      <step>Delete skillrena/write_memory-skl/</step>
+      <step>Delete skillrena/diary-skl/</step>
+      <step>Delete skillrena/switch_modes-skl/</step>
+      <step>Delete skillrena/plan-plan-skl/</step>
+      <step>Delete skillrena/subplan-skl/</step>
+      <step>Delete skillrena/mode-editing-ski/</step>
+      <step>Delete skillrena/mode-interactive-ski/</step>
+      <step>Delete skillrena/mode-no-memories-ski/</step>
+      <step>Delete skillrena/mode-one-shot-ski/</step>
+      <step>Delete skillrena/mode-planning-ski/</step>
+      <step>Verify only new skills remain</step>
+    </implementation_plan>
+
+    <test_data>
+      <required>false</required>
+      <source>file</source>
+      <gap_analysis>N/A - deletion task</gap_analysis>
+      <plan>ls to verify correct directories remain</plan>
+      <fixture_paths>
+        <path>N/A</path>
+      </fixture_paths>
+      <validation>
+        <check>No *-skl or *-ski directories remain</check>
+        <check>All 6 new skill directories still exist</check>
+      </validation>
+    </test_data>
+
+    <tests>
+      <add>
+        <test_file>N/A - manual verification</test_file>
+        <assertion>Only new skill directories remain in skillrena/</assertion>
+      </add>
+    </tests>
+
+    <commands>
+      <cmd>ls skillrena/*-skl skillrena/*-ski 2>/dev/null || echo "No old skills found"</cmd>
+      <cmd>rm -rf skillrena/activate-skl skillrena/onboarding-skl skillrena/write_memory-skl skillrena/diary-skl skillrena/switch_modes-skl skillrena/plan-plan-skl skillrena/subplan-skl</cmd>
+      <cmd>rm -rf skillrena/mode-editing-ski skillrena/mode-interactive-ski skillrena/mode-no-memories-ski skillrena/mode-one-shot-ski skillrena/mode-planning-ski</cmd>
+      <cmd>ls skillrena/</cmd>
+    </commands>
+
+    <acceptance>
+      <criterion>Passes when ls skillrena/*-skl skillrena/*-ski returns no results</criterion>
+      <criterion>Passes when ls skillrena/ shows only: activating-memories, writing-memories, recording-diary, switching-modes, bootstrapping-design-docs, generating-subtasks</criterion>
+    </acceptance>
+
+    <task_completed_status>false</task_completed_status>
+
+    <safety>
+      <destructive_actions>true</destructive_actions>
+      <notes>DESTRUCTIVE: Permanently deletes old skill directories. Must verify T1-T5 complete before executing. Content is preserved in git history.</notes>
+    </safety>
+  </task>
+
+  <task id="T7-update-memory-naming" owner="unassigned" status="planned">
+    <summary>Update documentation and examples to use hyphen-only memory names without -skl suffix.</summary>
+
+    <scope>
+      <in>Updating onboarding-guide.md, writing-memories/SKILL.md, and activating-memories/SKILL.md to show project-overview instead of project_overview-skl. Updating example memory paths.</in>
+      <out>Migrating existing user memories (users handle themselves per answered question).</out>
+    </scope>
+
+    <reuse_check>
+      <search_terms>
+        <term>project_overview-skl</term>
+        <term>memory naming</term>
+        <term>-skl suffix</term>
+      </search_terms>
+      <existing_utilities>
+        <candidate>skillrena/activating-memories/SKILL.md::memory path references</candidate>
+        <candidate>skillrena/activating-memories/references/onboarding-guide.md::memory examples</candidate>
+      </existing_utilities>
+      <decision>extend</decision>
+      <justification>Update existing content to use new naming convention.</justification>
+    </reuse_check>
+
+    <interfaces>
+      <exports>
+        <function name="N/A - documentation only">
+          <signature>N/A</signature>
+          <types>
+            <param name="N/A">N/A</param>
+            <returns>N/A</returns>
+          </types>
+          <invariants>
+            <invariant>All memory examples must use hyphen-only names</invariant>
+            <invariant>No underscores or -skl suffixes in memory names</invariant>
+          </invariants>
+          <optionals>
+            <allowed>false</allowed>
+            <justification>N/A</justification>
+          </optionals>
+        </function>
+      </exports>
+    </interfaces>
+
+    <implementation_plan>
+      <step>Search all new skill files for memory name references</step>
+      <step>Replace project_overview-skl with project-overview</step>
+      <step>Replace suggested_commands-skl with suggested-commands</step>
+      <step>Replace style_and_conventions-skl with style-and-conventions</step>
+      <step>Replace task_completion_checklist-skl with task-completion-checklist</step>
+      <step>Update any other memory name patterns to use hyphens only</step>
+      <step>Update example paths in documentation</step>
+    </implementation_plan>
+
+    <test_data>
+      <required>false</required>
+      <source>file</source>
+      <gap_analysis>N/A - documentation task</gap_analysis>
+      <plan>grep for old naming patterns</plan>
+      <fixture_paths>
+        <path>N/A</path>
+      </fixture_paths>
+      <validation>
+        <check>No _-skl patterns in memory references</check>
+        <check>All examples show hyphen-only names</check>
+      </validation>
+    </test_data>
+
+    <tests>
+      <add>
+        <test_file>N/A - manual verification</test_file>
+        <assertion>All memory name examples use spec-compliant format</assertion>
+      </add>
+    </tests>
+
+    <commands>
+      <cmd>grep -r "_.*-skl" skillrena/</cmd>
+      <cmd>grep -r "project-overview\|suggested-commands\|style-and-conventions\|task-completion-checklist" skillrena/</cmd>
+    </commands>
+
+    <acceptance>
+      <criterion>Passes when grep for underscore-skl patterns in skillrena/ returns no results</criterion>
+      <criterion>Passes when all memory examples show: project-overview, suggested-commands, style-and-conventions, task-completion-checklist</criterion>
+    </acceptance>
+
+    <task_completed_status>false</task_completed_status>
+
+    <safety>
+      <destructive_actions>false</destructive_actions>
+      <notes>Documentation changes only. Existing user memories are not affected (users migrate themselves if desired).</notes>
+    </safety>
+  </task>
+
+</design-doc-tasks>

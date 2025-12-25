@@ -55,9 +55,7 @@ Skillrena's skills violate the official [Agent Skills specification](../docs/spe
    - Are not descriptive (what does "skl" mean to a new user?)
    - Don't follow the recommended **gerund form** (e.g., `processing-pdfs`)
    - Create artificial distinction between "callable" and "internal" skills
-
 2. **Underscore usage**: `switch_modes-skl` uses underscore which violates spec (hyphens only).
-
 ### Structural Violations
 
 1. **Mode skills as standalone**: The 5 mode skills (`mode-*-ski`) are internal implementation details of `switch_modes-skl`. Per best practices on **progressive disclosure**, these should be `assets/` files within the parent skill, loaded only when needed.
@@ -75,7 +73,6 @@ Current descriptions are too brief and don't follow the spec guidance:
 | `activate-skl` | "Check onboarding and load memories." | Doesn't say WHEN to use it |
 | `switch_modes-skl` | "Switch agent mode." | Too vague, no triggers |
 | `write_memory-skl` | "Write a memory file with proper header." | Missing use cases |
-
 ### Token Budget Concerns
 
 - All skill metadata is loaded at startup (~100 tokens each)
@@ -486,9 +483,11 @@ Old skill names will not be supported. This is a breaking change requiring users
 | Question | Status | Answer |
 |----------|--------|--------|
 | [blocking] Should we provide a migration script for existing user memories (rename `*-skl` folders)? | Open | |
+> No not necessary
 | [important] Do we want to keep backward-compatible aliases (old names pointing to new)? | Open | |
+> No, better to enforce new names
 | [optional] Should `bootstrapping-design-docs` be shortened to `bootstrapping-docs`? | Open | |
-
+> No, keep full name for clarity
 ---
 
 ## Engineering Guardrails for Agent Execution

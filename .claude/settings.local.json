@@ -15,7 +15,8 @@
       "Skill(plan-plan-skl)",
       "Bash(mkdir:*)",
       "Skill(*)",
-      "Skill(design-doc-skl)"
+      "Skill(design-doc-skl)",
+      "Skill(subplan-skl)"
     ]
   },
   "outputStyle": "default"
