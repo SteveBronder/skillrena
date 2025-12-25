@@ -1,11 +1,14 @@
 ---
 name: bootstrapping-design-docs
-description: Creates design document infrastructure including templates, workflows, and the design-doc skill. Use when setting up design docs for a new project or when the user mentions "plan-plan".
+description: Creates design document infrastructure including templates, workflows, and a specific design doc skill. Use when setting up design docs for a new project or when the user mentions "bootstrapping-design-docs".
 ---
 
+<NOTE>
+Use the $activate-memories skill if you have not already to get an overview of the project before proceeding.
+</NOTE>
 <objective>
-1. If the `design-doc` folder does not already exist, create a repo-local `design-docs/` workspace (templates + active docs + index).
-  - If the `design-doc` folder already exists, stop and ask the user how to proceed.
+1. If the `design-docs` folder does not already exist, create a repo-local `design-docs/` workspace (templates + active docs + index).
+  - If the `design-docs` folder already exists, stop and ask the user how to proceed.
 2. Create a **project-specific** design doc template. If the user does not specify a specific type of design doc they want to create, we will be creating a general design document template called `base-design-doc.md` for the overall project.
 3. Generate a **project-specific** design-doc skill for authoring design docs with:
    - explicit specs (interfaces, signatures, types)
@@ -14,7 +17,7 @@ description: Creates design document infrastructure including templates, workflo
    - Example: The user wants to make a design doc skill for the ETL pipeline creations in the project. Then your task would be to create a `$etl-design-doc` skill.
 4. Support repeated runs to create additional templates (variants) without breaking existing docs.
 
-For the rest of this document `{DESIGN_DOC_SKILL_NAME}` will refer to the name of the skill we will make that will later be used to generate design docs for this project. Default: `design-doc`.
+For the rest of this document `{DESIGN_DOC_SKILL_NAME}` will refer to the name of the skill we will make that will later be used to generate design docs for this project. Default: `creating-design-doc`.
 Once you create the base design doc template and skill, you must ask questions to the user to help clarify anything you are unsure of.
 This is a **joint user-agent process**: ask targeted questions when unsure; do not finalize templates without user review.
 </objective>
@@ -26,10 +29,10 @@ Create (idempotent; do not overwrite without preserving history):
 - `design-docs/README.md` - How design docs are written, reviewed, and used for delegated execution.
 - `design-docs/active/` - Directory for active design documents.
 - `design-docs/agents/` - Directory for agent-executable XML subtasks.
-- `.{AGENT_NAME}/skills/design-doc/SKILL.md` - The generated `${DESIGN_DOC_SKILL_NAME}` skill.
-- `.{AGENT_NAME}/skills/design-doc/templates/README.md` - Lists available templates and when to use them.
-- `.{AGENT_NAME}/skills/design-doc/templates/base.md` - Meta "base" design doc template (guardrails + structure).
-- `.{AGENT_NAME}/skills/design-doc/templates/<variant>.md` - Project-specific templates (e.g., `skill.md`, `feature.md`).
+- `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/SKILL.md` - The generated `${DESIGN_DOC_SKILL_NAME}` skill.
+- `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/templates/README.md` - Lists available templates and when to use them.
+- `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/templates/base.md` - Meta "base" design doc template (guardrails + structure).
+- `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/templates/<variant>.md` - Project-specific templates (e.g., `skill.md`, `feature.md`).
 </file_list>
 
 **Note**: Templates are bundled with the skill (not in `design-docs/`) per Agent Skills progressive disclosure pattern.
@@ -67,17 +70,16 @@ If you have not already, run the $activating-memories skill to get an overview o
    - `design-docs/`
    - `design-docs/active/`
    - `design-docs/agents/`
-   - `.{AGENT_NAME}/skills/design-doc/`
-   - `.{AGENT_NAME}/skills/design-doc/templates/`
+   - `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/`
+   - `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/templates/`
 
 2. **Write design doc skill and bundled templates**:
    - `design-docs/README.md` (workflow + approvals)
-   - `.{AGENT_NAME}/skills/design-doc/SKILL.md` (the skill)
-   - `.{AGENT_NAME}/skills/design-doc/templates/README.md` (template index)
-   - `.{AGENT_NAME}/skills/design-doc/templates/base.md` (meta template with guardrails)
-   - `.{AGENT_NAME}/skills/design-doc/templates/skill.md` (skill creation template)
-   - `.{AGENT_NAME}/skills/design-doc/templates/feature.md` (feature template)
-
+   - `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/SKILL.md` (the skill)
+   - `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/templates/README.md` (template index)
+   - `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/templates/base.md` (meta template with guardrails)
+   - `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/templates/skill.md` (skill creation template)
+   - `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/templates/feature.md` (feature template)
 3. **Run Adaptive Questioning Protocol**:
    - Produce "Detected Defaults Summary"
    - Ask triggered questions
@@ -85,7 +87,7 @@ If you have not already, run the $activating-memories skill to get an overview o
 
 4. **Idempotency**:
    - Never overwrite existing templates without timestamped backup
-   - Add new variants to `.{AGENT_NAME}/skills/design-doc/templates/README.md`
+   - Add new variants to `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/templates/README.md`
 </generation_steps>
 
 
@@ -201,8 +203,9 @@ Include verbatim in the design doc skill you create under "Engineering Guardrail
 
 <completion_criteria>
 - `design-docs/` exists with README + `active/` + `agents/` subdirectories
-- `${DESIGN_DOC_SKILL_NAME}` skill exists at `.{AGENT_NAME}/skills/design-doc/`
-- Templates bundled at `.{AGENT_NAME}/skills/design-doc/templates/`
+- name of ${DESIGN_DOC_SKILL_NAME} confirmed with user. 
+- `${DESIGN_DOC_SKILL_NAME}` skill exists at `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/`
+- Templates bundled at `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/templates/`
 - `base.md` includes guardrails and human-readable subtasks section format
 - At least one project-specific template variant exists with repo-specific test commands
 - Skill workflow: human-readable subtasks in main doc -> user approval -> XML in `design-docs/agents/`

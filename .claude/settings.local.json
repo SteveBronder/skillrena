@@ -16,7 +16,13 @@
       "Bash(mkdir:*)",
       "Skill(*)",
       "Skill(design-doc-skl)",
-      "Skill(subplan-skl)"
+      "Skill(subplan-skl)",
+      "Skill(switching-modes)",
+      "Skill(activating-memories)",
+      "Skill(writing-memories)",
+      "Skill(bootstrapping-design-docs)",
+      "Read(.claude/*)",
+      "Write(.claude/*)"
     ]
   },
   "outputStyle": "default"

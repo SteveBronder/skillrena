@@ -1,109 +1,49 @@
-# Design Docs
+# Design Documents
 
-This directory contains design documents for Skillrena features and skills.
+Design docs are written in markdown, reviewed by humans, and used for delegated agent execution.
 
 ## Workflow
 
-### 1. Create a Design Doc
-
-Run the `$design-doc` skill to create a new design document:
-
-```
-$design-doc
-```
-
-The skill will:
-- Ask you to select a template (`skill` or `feature`)
-- Create a main doc at `design-docs/active/YYYYMMDD-<slug>.md`
-
-### 2. Fill Out the Document
-
-Complete all required sections in the main design doc:
-- Context and problem statement
-- Goals and non-goals
-- Proposed design with explicit interfaces
-- Alternatives considered (minimum 2 + "do nothing")
-- Verification strategy
-- **Subtasks** (human-readable checklist)
-
-### 3. Define Subtasks (Human-Readable)
-
-Add subtasks to the "## Subtasks" section using this format:
-
-```markdown
-## Subtasks
-
-### T1: [Task Title]
-- **Summary**: One sentence objective
-- **Scope**: What's in / what's out
-- **Acceptance**: Binary pass/fail criteria
-- **Status**: [ ] Not started / [~] In progress / [x] Complete
-
-### T2: [Task Title]
-...
-```
-
-### 4. Review and Approval
-
-Before implementation:
-- [ ] All `[blocking]` questions resolved
-- [ ] Design reviewed by stakeholder (if applicable)
-- [ ] Subtasks reviewed and approved by user
-
-### 5. Generate Agent-Executable XML
-
-After the user approves the subtasks, the agent generates:
-```
-design-docs/agents/<design-doc-name>.xml
-```
-
-This XML file contains structured task definitions that agents can parse and execute.
-
-### 6. Execute
-
-Agents read the XML file in `design-docs/agents/` and execute subtasks. Each task includes:
-- Scope boundaries
-- Reuse-first checks
-- Verification commands
-- Acceptance criteria
+1. **Create**: Run `$design-skill` to generate a new skill design doc from template
+2. **Write**: Fill out the design doc in `design-docs/active/YYYYMMDD-slug.md`
+3. **Review**: Get user approval on the subtasks section
+4. **Generate**: Run `$generating-subtasks` to create agent-executable XML in `design-docs/agents/`
+5. **Execute**: Agent executes subtasks, updating status as it progresses
 
 ## Directory Structure
 
 ```
 design-docs/
-├── README.md              # This file
-├── active/
-│   └── YYYYMMDD-slug.md   # Main design doc (with human-readable subtasks)
-└── agents/
-    └── YYYYMMDD-slug.xml  # Agent-executable subtasks (after approval)
+├── README.md          # This file
+├── active/            # In-progress design documents (markdown)
+└── agents/            # Agent-executable subtasks (XML)
 ```
 
-**Templates**: Bundled with the `$design-doc-skl` skill at `.claude/skills/design-doc-skl/templates/`
+## Design Doc Naming
 
-## Two-Phase Subtask Workflow
+Format: `YYYYMMDD-slug.md`
 
-| Phase | Location | Purpose |
-|-------|----------|---------|
-| 1. Planning | `active/*.md` (Subtasks section) | Human-readable, easy to iterate |
-| 2. Execution | `agents/*.xml` | Machine-parseable, for agent delegation |
+Examples:
+- `20251225-activating-memories.md`
+- `20251225-pdf-processing.md`
 
-This separation ensures:
-- Humans can easily review and edit subtasks during planning
-- Agents get structured data they can reliably parse
-- Clear approval gate before agent work begins
+## Approval Process
 
-## Guardrails
+1. Author writes design doc following template
+2. Reviewer checks:
+   - Goals/non-goals are clear
+   - Alternatives considered (≥2 + "do nothing")
+   - Subtasks have binary acceptance criteria
+   - Testing strategy validates against spec
+3. User approves subtasks before XML generation
 
-All design docs enforce these engineering guardrails:
+## Engineering Guardrails
 
-1. **Reuse-first rule**: Search existing utilities before creating new ones
-2. **No destructive shortcuts**: Never delete data to pass tests
-3. **Signature discipline**: Explicit types and invariants required
-4. **Alternatives requirement**: Evaluate >=2 alternatives + "do nothing"
-5. **Uncertainty protocol**: Ask `[blocking]` questions when unsure
+All design docs must address:
 
-## Naming Convention
-
-- Main doc: `YYYYMMDD-<slug>.md` (e.g., `20251222-new-diary-skill.md`)
-- Agent XML: `YYYYMMDD-<slug>.xml` (e.g., `20251222-new-diary-skill.xml`)
-- Slug: lowercase, hyphen-separated, descriptive
+- **Reuse-first rule**: Search existing utilities before creating new ones
+- **No destructive shortcuts**: Never delete data to pass tests
+- **Test integrity**: Mock boundaries only; prefer record/replay
+- **Signature discipline**: Explicit types; Optional/None requires justification
+- **Alternatives requirement**: Evaluate ≥2 alternatives + "do nothing"
+- **Uncertainty protocol**: Ask blocking questions when unsure

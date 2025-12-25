@@ -93,6 +93,7 @@ The XML file wraps all tasks in a root element and follows this schema:
   <acceptance>
     <criterion>Binary "passes when ...".</criterion>
   </acceptance>
+  <!-- IMPORTANT!!!: YOU MUST CHANGE task_completed_status TO TRUE WHEN THE TASK IS COMPLETE -->
   <task_completed_status>
   false
   </task_completed_status>
