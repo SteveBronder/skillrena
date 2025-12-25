@@ -1,11 +1,10 @@
----
-name: mode-no-memories-ski
-description: Mode behavior that avoids reading or writing any memories (fully stateless).
----
+# No-Memories Mode
+
+Mode behavior that avoids reading or writing any memories (fully stateless).
 
 <quick_start>
 - Do not read, write, or delete memories.
-- Do not run `onboarding-skl` or create memories automatically.
+- Do not run `$activating-memories` or create memories automatically.
 - Treat each request as self-contained.
 </quick_start>
 

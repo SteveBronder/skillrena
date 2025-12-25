@@ -1,26 +1,26 @@
 ---
-name: write_memory-skl
-description: Write a memory file with proper header.
+name: writing-memories
+description: Writes or updates memory files with proper YAML frontmatter in the agent's memories directory. Use when saving new project learnings or updating existing memory files.
 ---
 
 <quick_start>
-- Write to `./.{AGENT_NAME}/skills/memories/<name>-skl/SKILL.md`.
+- Write to `./.{AGENT_NAME}/skills/memories/<name>/SKILL.md`.
 - Create the directory if needed.
 - Prepend the required header if missing.
 </quick_start>
 
 <configuration>
 <file_format>
-- Path: `./.{AGENT_NAME}/skills/memories/<name>-skl/SKILL.md`
-- The `<name>-skl` is the skill/memory name with `-skl` suffix (e.g., `project_overview-skl`, `suggested_commands-skl`)
+- Path: `./.{AGENT_NAME}/skills/memories/<name>/SKILL.md`
+- The `<name>` is the memory name using hyphens (e.g., `project-overview`, `suggested-commands`)
 - The file must be named `SKILL.md` (uppercase)
 </file_format>
 
 <header_rules>
 - The header uses YAML frontmatter (between `---` delimiters)
 - **Required fields:**
-  - `name` - the skill name with `-skl` suffix (must match the folder name)
-  - `description` - brief description of what this skill does and when to use it
+  - `name` - the memory name (must match the folder name)
+  - `description` - brief description of what this memory contains and when to use it
 - The `description` field must NOT contain colons (`:`) after the initial one
   - Good: `description: Brief summary of project structure`
   - Bad: `description: Project structure: components and layout`
@@ -34,7 +34,7 @@ description: Write a memory file with proper header.
 Every `SKILL.md` file **must** have this exact header format:
 ```
 ---
-name: <skill-name>
+name: <memory-name>
 description: <brief description without colons>
 ---
 ```
@@ -42,7 +42,7 @@ description: <brief description without colons>
 Example:
 ```
 ---
-name: project_overview-skl
+name: project-overview
 description: Skillrena repo purpose and structure
 ---
 ```

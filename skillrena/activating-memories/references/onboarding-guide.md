@@ -1,20 +1,19 @@
----
-name: onboarding-skl
-description: Discover project and create baseline memory skills.
----
+# Onboarding Guide
+
+Discover project and create baseline memory skills.
 
 <quick_start>
 Task: Write skills in your local agent folder that will summarize key information about the project that will be high signal and ensure task success for future agents that use the skills.
 The information you write must give future agents enough information to confidently understand the project in its completeness.
 - Read docs, configs, entrypoints, and other important files.
-- Create the baseline memory skills via `$write_memory-skl`.
-  - Each memory is a skill file at `./.{AGENT_NAME}/skills/memories/<name>-skl/SKILL.md`.
+- Create the baseline memory skills via `$writing-memories`.
+  - Each memory is a skill file at `./.{AGENT_NAME}/skills/memories/<name>/SKILL.md`.
   - Example baseline set:
-    - `project_overview-skl/SKILL.md`
-    - `suggested_commands-skl/SKILL.md`
-    - `style_and_conventions-skl/SKILL.md`
-    - `task_completion_checklist-skl/SKILL.md`
-    - `testing_guidance-skl/SKILL.md`
+    - `project-overview/SKILL.md`
+    - `suggested-commands/SKILL.md`
+    - `style-and-conventions/SKILL.md`
+    - `task-completion-checklist/SKILL.md`
+    - `testing-guidance/SKILL.md`
 - It is a **great idea** to think of other skills that would be relevant to this project
 - Read as many files as you need to clearly understand the project.
 </quick_start>
@@ -27,10 +26,10 @@ The information you write must give future agents enough information to confiden
 - doc, design, and testing folders
 - It is imperative you understand the testing process for the project
 - Locations of common utilities used in the project.
-- Search for a docs/ folder and summarise any architecture or process documents.”
+- Search for a docs/ folder and summarise any architecture or process documents."
 - Read function documentation when available
 - If a module contains its own README with detailed features or concepts, consider it an important folder to note.
-- Describe the data or control flow through the project’s main components.
+- Describe the data or control flow through the project's main components.
 - Summarise environment setup and console commands by reading any shell scripts or CLI definitions.
 </must_read_files>
 

@@ -1,7 +1,6 @@
----
-name: mode-editing-ski
-description: Mode behavior for precise, minimal code edits.
----
+# Editing Mode
+
+Mode behavior for precise, minimal code edits.
 
 <quick_start>
 - Identify the exact target (file/symbol/lines); ask if unclear.

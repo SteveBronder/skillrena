@@ -1,13 +1,13 @@
 ---
-name: subplan-skl
-description: Take a design document and turn it into agent friendly xml
+name: generating-subtasks
+description: Converts approved design documents into agent-executable XML subtasks. Use after a design doc is approved and ready for implementation.
 ---
 
 <subtask_schema>
 Agent-executable subtasks go in `design-docs/agents/<design-doc-name>.xml`.
 
 **This file is generated ONLY after the user approves the human-readable subtasks in the main design doc.**
-
+**IMPORTANT: If you have the user do not have subtask written in the markdown design doc, do NOT generate this file. You must generate the subtasks in the markdown file first, then wait for user instructions before continuing with building the XML file.**
 The XML file wraps all tasks in a root element and follows this schema:
 
 ```xml
@@ -91,8 +91,9 @@ The XML file wraps all tasks in a root element and follows this schema:
   </commands>
 
   <acceptance>
-    <criterion>Binary "passes when …".</criterion>
+    <criterion>Binary "passes when ...".</criterion>
   </acceptance>
+  <!-- IMPORTANT!!!: YOU MUST CHANGE task_completed_status TO TRUE WHEN THE TASK IS COMPLETE -->
   <task_completed_status>
   false
   </task_completed_status>
@@ -110,4 +111,3 @@ The XML file wraps all tasks in a root element and follows this schema:
 </design-doc-tasks>
 ```
 </subtask_schema>
-

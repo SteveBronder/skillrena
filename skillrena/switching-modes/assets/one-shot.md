@@ -1,7 +1,6 @@
----
-name: mode-one-shot-ski
-description: Mode behavior for autonomous end-to-end execution without back-and-forth.
----
+# One-Shot Mode
+
+Mode behavior for autonomous end-to-end execution without back-and-forth.
 
 <quick_start>
 - Proceed end-to-end without follow-up questions unless absolutely required.

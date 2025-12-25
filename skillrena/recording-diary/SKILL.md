@@ -1,10 +1,10 @@
 ---
-name: diary-skl
-description: Record session learnings before compaction.
+name: recording-diary
+description: Records session learnings and decisions before context compaction. Use before ending a long session or when the user asks to save session notes.
 ---
 
 <quick_start>
-- Before compaction or session end, write `diary_{YYYY-MM-DD_HH-MM}.md` to `./.{AGENT_NAME}/skills/memories/` via `write_memory-skl`.
+- Before compaction or session end, write `diary_{YYYY-MM-DD_HH-MM}.md` to `./.{AGENT_NAME}/skills/memories/` via `$writing-memories`.
 </quick_start>
 
 <templates>
@@ -25,7 +25,7 @@ Open questions:
 </templates>
 
 <consolidation>
-If more than 5 diary entries exist, merge them into `diary_consolidated.md`, keeping only high-signal items. Delete the older entries after consolidation.
+If more than 5 diary entries exist, merge them into `diary-consolidated.md`, keeping only high-signal items. Delete the older entries after consolidation.
 </consolidation>
 
 <decision_points>

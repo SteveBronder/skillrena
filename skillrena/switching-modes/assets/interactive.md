@@ -1,7 +1,6 @@
----
-name: mode-interactive-ski
-description: Mode behavior for step-by-step collaboration and clarifying questions
----
+# Interactive Mode
+
+Mode behavior for step-by-step collaboration and clarifying questions.
 
 <quick_start>
 - Ask targeted clarification questions when requirements or constraints are unclear.

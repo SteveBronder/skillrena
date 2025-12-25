@@ -1,7 +1,6 @@
----
-name: mode-planning-ski
-description: Mode behavior for analysis-only planning without edits.
----
+# Planning Mode
+
+Mode behavior for analysis-only planning without edits.
 
 <quick_start>
 - Do not edit project files (except a design doc explicitly requested).
