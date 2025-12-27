@@ -1,99 +1,139 @@
-# Onboarding Guide
-
-Discover project and create baseline memory skills.
-
-<quick_start>
-Task: Write skills in your local agent folder that will summarize key information about the project that will be high signal and ensure task success for future agents that use the skills.
-The information you write must give future agents enough information to confidently understand the project in its completeness.
-- Read docs, configs, entrypoints, and other important files.
-- Create the baseline memory skills via `$writing-memories`.
-  - Each memory is a skill file at `./.{AGENT_NAME}/skills/memories/<name>/SKILL.md`.
-  - Example baseline set:
-    - `project-overview/SKILL.md`
-    - `suggested-commands/SKILL.md`
-    - `style-and-conventions/SKILL.md`
-    - `task-completion-checklist/SKILL.md`
-    - `testing-guidance/SKILL.md`
-- It is a **great idea** to think of other skills that would be relevant to this project
-- Read as many files as you need to clearly understand the project.
-</quick_start>
-
-<must_read_files>
-- Key config files (e.g., files used to compile or run the project like pyproject.toml, CMake, Make, etc.)
-- `readme.md/agent.md/claude.md` at all levels of the project
-- Primary entrypoints (e.g., main files)
-- Dependencies for main files that are written in this project
-- doc, design, and testing folders
-- It is imperative you understand the testing process for the project
-- Locations of common utilities used in the project.
-- Search for a docs/ folder and summarise any architecture or process documents."
-- Read function documentation when available
-- If a module contains its own README with detailed features or concepts, consider it an important folder to note.
-- Describe the data or control flow through the project's main components.
-- Summarise environment setup and console commands by reading any shell scripts or CLI definitions.
-</must_read_files>
-
-<templates>
-<memory>
-<guidance>
-Below are example templates you can use for the main memories.
-These are non-exhaustive. You should think clearly about how to modify these to align with the overall project.
-After skills below, decide whether extra skills are warranted (e.g., architecture, domain-specific modules) and create them. Ask the user if they would like you to create these skills as explain why you think these skills should exist.
-</guidance>
-<project_overview>
-- Purpose/goal (what this repo exists to do)
-- Techstack used
-- Users/stakeholders (who uses it and why)
-- Primary workflows (top 3 paths a user follows)
-- Architecture (high-level components and how they interact)
-- Key entrypoints (main files, CLIs, services)
-- Data flow (inputs -> transformations -> outputs)
-- External dependencies (services/APIs/datastores)
-- Repo map (top-level folders, subfolders, and what they contain)
-- Known risks/constraints (performance, security, domain rules)
-- common utilities
-</project_overview>
-
-<suggested_commands>
-- Build commands (with expected outputs)
-- Test commands (unit/integration/e2e)
-- Lint/format/lsp commands
-- Run/deploy commands (local, staging, prod)
-- Environment setup (env vars, virtual environments, tooling versions, bootstrap)
-- Helpful scripts (what they do and when to use them)
-</suggested_commands>
-
-<style_and_conventions>
-- Code style (formatters, linters, naming)
-- Language/framework conventions (idioms, patterns)
-- File/dir conventions (where new code/tests/docs go)
-- Testing style (fixtures, naming, structure)
-- Error handling/logging conventions
-- Documentation conventions (doc locations, templates)
-</style_and_conventions>
-
-<task_completion_checklist>
-- Preconditions (inputs to confirm with user)
-- Required checks (tests/lint/build)
-- Review points (risk areas to double-check)
-- Output validation (where to verify results)
-- Rollback/recovery notes (if applicable)
-</task_completion_checklist>
-
-<testing_guidance>
-- Where tests are located
-- How to run tests
-- Common testing patterns
-- where common and shared data and fixtures for tests are located
-</testing_guidance>
-</memory>
-</templates>
-
-<decision_points>
-- Missing docs -> ask the user for purpose and goals, then note gaps.
-- Multiple entrypoints -> capture the primary ones and why.
-</decision_points>
-
-<failure_modes>
-- Unclear structure: document assumptions explicitly.
-</failure_modes>
+This skill guides the agent through analyzing a new codebase and creating persistent "memory" skill files for future reference. It performs a comprehensive exploration of the project to build high-signal knowledge bases. The following core memory modules will be generated: project-overview, suggested-commands, style-and-conventions, task-completion-checklist, and testing-guidance. If the repository is large or complex, additional memory modules may be created to cover specific domains or components.
+Guidelines
+- Use Pointers, Not Quotes: When referencing the code or configuration, refer to file names, paths, or line numbers rather than copying large code excerpts. (For example, say "configuration is handled in config/app.yaml" instead of quoting the file's content.) This keeps memories concise and tied to source of truth.
+- Ask for Missing Info: If crucial information is missing or unclear from the repository, use $ask-user to prompt the user for clarification rather than guessing. For instance, if no README or description is found, you might invoke $ask-user to get a high-level project description.
+- Emphasize Best Practices: Throughout the onboarding, capture best practices like writing tests for new features, avoiding dangerous operations in development (e.g. dropping a production database), and following coding conventions. These should be reflected especially in the checklist and testing guidance memories.
+- High Signal, Low Noise: Ensure each memory file contains specific, useful details. Avoid overly vague summaries – include concrete names of modules, important functions, and specifics (e.g. key settings from config files, important constants, etc.). The goal is for the agent to quickly recall critical details without wading through generic information.
+- Avoid Destructive Actions: Nothing in the onboarding process should execute or modify the project. The skill should only read files. Additionally, warn against destructive behaviors in relevant memories (for example, in testing guidance, note if running certain commands could wipe or migrate databases, and how to do so safely).
+- Persistent Output: After analysis, output the findings into the memory skill files under ./.{AGENT_NAME}/skills/memories/ so that future sessions can load them via the activate-memories skill. Each memory module should be saved in its own subdirectory (e.g. ./.{AGENT_NAME}/skills/memories/project-overview/SKILL.md).
+Onboarding Steps
+1. Preliminary Repository Analysis:
+2. Scan for key project documentation and entry points. Check if a README.md (or similar top-level documentation) exists and parse it for an overview of the project. Also look for other docs like docs/ directories or installation guides that might contain useful context.
+3. Identify configuration files and critical settings. For example, look for files like .env or .env.example, YAML/JSON config files, or settings in source (e.g. a config.py or settings.js). These can reveal environment requirements (database URLs, API keys usage, etc.) and should be noted for context (without copying sensitive values).
+4. Determine the primary programming language(s) and frameworks by examining the repository structure and files:
+  - For Python projects, look for requirements.txt or pyproject.toml; for Node.js, a package.json; for Java, maybe pom.xml or build.gradle; etc. Note the language and any major frameworks (e.g. Django, React, etc.) used, as this informs later steps.
+  - Identify the main entry point of the application. For instance, a main.py or app.js file, a CLI entry in setup.py, or a Dockerfile ENTRYPOINT. This helps understand how the project is run.
+5. Map out the high-level structure. Note the presence of major directories like src/, lib/, app/, tests/, docs/, etc. This gives an idea of how code is organized (e.g., all core code in src, tests separate in tests/).
+6. Gauge the project size and complexity. If the repository has many files or sub-projects (monorepo), plan to create additional memory modules for distinct parts (for example, separate memories for a frontend vs. backend, or for each service in a microservice repo).
+7. If any fundamental information (purpose of project, how to run it) is not readily available in the files, use $ask-user to get that information before proceeding (e.g., "$ask-user: What is the main purpose of this project and its primary functionality?").
+8. Generate project-overview Memory:
+9. Project Purpose & Domain: Summarize what the project is and what it does. Use the README and any introductory documentation to describe the domain and main functionality. Be specific: for example, "This is a web application for managing personal finance budgets" or "A CLI tool that organizes and renames photo files". If the README provides a project description, incorporate that (paraphrased, not copied verbatim).
+10. Architecture & Key Components: Outline the high-level architecture and major components of the codebase:
+  - List the primary modules or layers of the system. For example: "The project follows a Model-View-Controller architecture with models in models/, view templates in templates/, and controllers in routes/." Or, "It consists of a client app (/client folder) and a server (/server folder) that communicate via REST API."
+  - Mention how these components interact. E.g., "The backend (server/ directory) exposes REST endpoints for user management and data processing, while the frontend (client/ directory) is a React app that calls those endpoints."
+  - Use pointers to relevant files/directories for each component described (e.g., "core/database.py handles all database interactions", "services/ contains business logic classes").
+11. Tech Stack & Dependencies: Note the key technologies and libraries in use:
+  - Frameworks (e.g., "built on Express.js and Node 14", "uses Flask with a PostgreSQL database via SQLAlchemy").
+  - Important libraries (e.g., "uses React v17 for the frontend", "utilizes Pandas and NumPy for data analysis").
+  - If version information is available (from lockfiles or package files), record major version numbers for context.
+12. Notable Design Patterns or Decisions: Mention any significant patterns or project-specific conventions. For example, "Uses repository pattern for data access (see repository/ classes)", or "All API calls are wrapped in a retry mechanism (see utils/retry.js)". Highlight anything the agent should keep in mind when navigating or modifying the code.
+13. Golden Path Scenarios: Describe how the project handles common development scenarios:
+  - Adding a Feature: Explain the typical steps to implement a new feature in this project. For instance, "to add a new API endpoint, you would create a new route in routes/api.js, implement the handler in controllers/, and possibly add a method in the service layer." If the project has a plugin system or modular architecture, note how new modules are added. Use existing features as examples (e.g., "the feature X implemented in feature_x.py can serve as a template for adding similar features").
+  - Fixing a Bug or Failing Test: Outline an approach for diagnosing and fixing bugs. "If a test fails, first locate the test in the tests/ directory to understand the expected behavior. For example, if tests/test_user_login.py is failing, inspect the login logic in auth.py and the user model in models/user.py for potential issues." Emphasize reading error messages, using the stack trace to find the relevant code, and writing a new test if needed to reproduce the bug. If the repo has an issue tracker or TODO comments, mention checking those for known issues.
+  - Performance Optimization: Identify sections of code that could be performance-sensitive. For example, "the data import in import_data.py reads large files into memory; optimizing this might involve streaming the file or using chunk processing." Suggest typical steps like profiling the application (if tools or scripts exist, point to them, e.g., a profiling/ directory or a --profile flag in the app) and focusing on hotspots. If the project already has performance tests or benchmarks, mention where they are.
+  - Adding a CLI Subcommand: (If the project includes a CLI.) Describe how the CLI is organized. For example, "CLI commands are defined in cli/commands/ as individual Python scripts for each subcommand" or "The CLI uses the Click library; new commands can be added by creating a function with @click.command decorator in cli.py." If no CLI exists, this scenario can be skipped or replaced with another common task relevant to the project (such as "Adding a new module" or "Integrating a new library").
+14. Failure Awareness: Highlight any parts of the system known to be fragile or that require caution:
+  - For example, "The payment processing module (in payments.py) interacts with an external API and has several edge cases – changes here require careful testing."
+  - Note if there are critical sections with complex logic (e.g., concurrency handling in worker_thread.js, or a complex algorithm in optimizer.py).
+  - If the code has safety checks or warnings (like "DO NOT run in production" comments), mention them.
+  - If any destructive actions are possible (like a script that deletes data), point them out as something to be careful with (for instance, "the script reset_db.sh will delete and recreate the database; use only on development databases").
+15. Ensure the Project Overview memory is written clearly and succinctly, while packing in the important details as above. It should give any newcomer (or the agent in future sessions) a solid understanding of what the project is about and how it's structured.
+16. Save this summary to ./.{AGENT_NAME}/skills/memories/project-overview/SKILL.md.
+17. Generate suggested-commands Memory:
+18. Gather a list of useful commands for working with the project, including development, testing, and deployment tasks. These commands act as quick references for the agent when it needs to run or suggest an operation.
+19. Development & Setup Commands: Identify how to set up and start working on the project:
+  - Installation of dependencies (e.g., npm install, pip install -r requirements.txt, bundle install).
+  - Initial setup steps (e.g., commands to initialize a database schema like npm run migrate or python manage.py migrate, seeding data with npm run seed, etc. if applicable).
+  - Starting the development server or application (e.g., npm start for Node, flask run or python app.py for Python, yarn dev for a frontend dev server). Include any environment variables or config flags needed (for example, "ensure DEBUG=1 environment variable is set for development mode").
+20. Testing Commands: List how to run tests and related checks:
+  - Unit tests (e.g., pytest or npm test). If the project has multiple test suites (unit vs integration), list commands for each.
+  - Linters and formatters (e.g., npm run lint, flake8 ., black --check .). These are important to maintain code quality.
+  - Type checking or static analysis (e.g., mypy . for Python, tsc --noEmit for TypeScript, golangci-lint run for Go) if applicable.
+  - Any other QA tools (security audit commands like npm audit, etc.).
+21. Build and Deployment Commands: Include commands used to build or deploy the project:
+  - For frontend projects, the build command (e.g., npm run build to create a production bundle).
+  - For backend or libraries, how to package or build (e.g., go build, docker build -t myapp . if Docker is used, or publishing steps for libraries).
+  - Deployment or release commands/scripts if any (maybe a CI script or a deploy.sh present).
+  - Database migration commands for production (e.g., alembic upgrade head for Alembic, or ORM migration CLI usage) with a note to use caution or proper environment when running them.
+22. Utility and Maintenance Commands: Any other commands that could be useful:
+  - Generating documentation (maybe make docs or npm run docs).
+  - Running a development shell or console (e.g., python manage.py shell for Django shell).
+  - Clearing caches or resetting state (npm run clean, make clean).
+23. For each command, provide a brief description if it's not obvious. For example: "npm run build – Compiles the TypeScript source into optimized JavaScript in the dist/ directory." This helps the agent understand the purpose of the command.
+24. Source these from the README, Makefile, package.json scripts, or within any scripts directory. Use the repository's own documentation to verify the commands and options. If multiple options exist for a task (like different test scripts), include the most relevant ones.
+25. If any expected command is not found, flag it. For instance, if you expect a test command but none is defined, use $ask-user to clarify how tests are run. (e.g., "$ask-user: I did not find a test script. How are tests executed for this project?")
+26. Organize the commands by category (Setup, Development, Testing, etc.) for clarity in the memory file.
+27. Save the commands list to ./.{AGENT_NAME}/skills/memories/suggested-commands/SKILL.md.
+28. Generate style-and-conventions Memory:
+29. Record the coding style and conventions that the project adheres to, so future contributions remain consistent:
+  - Formatting Standards: Note any automatic formatting tools or style linters in use. For example, if there's a .prettierrc or .eslintrc in a JS project, mention that ("Code is formatted with Prettier (see .prettierrc for rules, e.g. 2-space indentation)"). For Python, if Black or Flake8 is used, note that ("Uses Black for formatting, as configured in pyproject.toml", or "PEP8 compliance is enforced via Flake8").
+  - Naming Conventions: Describe how classes, functions, variables, and files are typically named. E.g., "Classes use CamelCase (e.g., UserManager), functions use snake_case, and constants are UPPER_CASE. Files are usually lowercase with underscores if multi-word (as seen in user_profile.py)."
+  - Project Structure Conventions: If the project follows a certain layout pattern, articulate it. For instance, "Controllers are all in the controllers/ folder and end with _controller.js. Database models are all in models/ and each corresponds to a table." These conventions guide where new code should be placed.
+  - Commenting and Documentation: Note any conventions for code comments or docs. E.g., "Public functions are expected to have JSDoc comments," or "All modules have a header comment explaining their purpose," or "Docstrings in this project follow the Google style." If there's a docs/ folder or usage of tools like Sphinx or JSDoc, mention how documentation is maintained.
+  - Git / Workflow Conventions: If evident, mention any branching or commit message conventions (for example, "uses feature branches named feature-... and requires squash merging", or "commit messages follow Conventional Commits style like 'feat: ...', 'fix: ...' as hints from contribution guidelines"). This might be gleaned from a CONTRIBUTING.md or just left out if not obvious.
+  - Testing Conventions: (This might overlap with testing-guidance, but from a style perspective) e.g., "Test files end with _test.py and use snake_case function names," or "each component has a corresponding test file in the tests folder."
+  - Framework-specific Conventions: If the project uses a framework that imposes certain structure (like Django's app structure, or Ruby on Rails conventions), summarize those so the agent remembers them. E.g., "In Django, follow the app structure: models in models.py, URL routes in urls.py, etc."
+  - If any of the above are not explicitly documented, infer from the code. For example, consistent patterns in file naming or code formatting can be described. If unsure about a convention, it can be noted as a guess or asked from the user with $ask-user for confirmation.
+  - Example and References: Provide pointers to examples in the code for each convention where possible. For instance, "see CONTRIBUTING.md for commit message format", or "consistent naming as in user_service.py and user_controller.py indicating the service vs controller roles."
+30. This memory will serve as a quick reference to maintain consistency in style when the agent generates new code or documentation.
+31. Save the conventions to ./.{AGENT_NAME}/skills/memories/style-and-conventions/SKILL.md.
+32. Generate task-completion-checklist Memory:
+33. Create a checklist that the agent (or a developer) should go through before considering a task (feature implementation, bug fix, etc.) "done" in this project. This ensures thoroughness and reduces the risk of missing something important. The checklist should be comprehensive and project-tailored:
+  a. Testing: Verify all existing tests pass. If new code was added or a bug was fixed, write new tests or update existing tests to cover the changes. Run the test suite (<test command>) and ensure it completes successfully without failures.
+  b. Code Quality: Run all linters and formatters. Ensure the code meets the project's style and conventions (no linting errors, properly formatted). For example, run <lint command> and fix any warnings, and run the auto-formatter if one is used.
+  c. Documentation Updates: Update relevant documentation. This includes the README (if usage or behavior changes), in-code documentation (comments or docstrings), and any user-facing docs or CHANGELOG. Explain any new feature or notable change in appropriate docs.
+  d. Versioning and Changelog: If this project uses versioning (e.g., semantic versioning) or maintains a changelog, update the version number and add an entry describing the change. Ensure the package metadata (if a library) is up-to-date. For apps, ensure deployment scripts or manifests reflect the new version if needed.
+  e. Peer Review & Self-Review: Before finalizing, review the code changes yourself (and ideally have another developer review them if possible). Check for any potential issues (error handling, security considerations, performance implications). Make sure the code is clear and maintainable, with consistent style.
+  f. Deployment Considerations: Consider if the change affects deployment or operations. For example, if a database schema changed, prepare a migration script. If new environment variables are needed, update the deployment configuration. Ensure that when the code is deployed, all necessary steps (rebuilding, migrating, clearing caches, etc.) are addressed.
+  g. Backup / Rollback Plan: For risky changes, have a plan to revert or mitigate issues. For instance, know how to roll back a deployment or have a feature flag to disable the new feature if problems occur in production. This isn't always applicable, but it's a good practice for major changes.
+34. This checklist should be adjusted to the project's context. For example, if the project has a CI pipeline, one item could be "Ensure CI checks (tests, lint, build) all pass on the merge request." If the project is a library, an item might be "Increment version number in setup.py and publish to package registry."
+35. The checklist items are written as actions (imperative mood) so that the agent can easily follow them one by one when finishing up a task. It might help to prefix them with checkboxes (e.g., "- [ ] ") in the memory file so they serve as a to-do list.
+36. Emphasize thoroughness: the goal is to catch common omissions (like forgetting to update docs or not running tests) before declaring work complete.
+37. Save the checklist to ./.{AGENT_NAME}/skills/memories/task-completion-checklist/SKILL.md.
+38. Generate testing-guidance Memory:
+39. Provide detailed guidance on how to test the project and any testing best practices. This will help the agent design and run tests properly for future changes:
+  - How to Run Tests: Specify the exact commands to run the test suite (from the earlier suggested-commands). For example, "Run pytest from the project root to execute all tests" or "Use npm test to run the Jest test suite." If there are multiple test tiers (unit, integration, e2e), describe how to run each (e.g., "Unit tests: npm run test:unit, Integration tests: npm run test:int").
+  - Testing Framework and Tools: Identify the framework (e.g., Jest, PyTest, JUnit) and any libraries (e.g., React Testing Library, Selenium for browser tests). Note any configuration that affects testing, such as a pytest.ini or custom test runner settings. For example, "Tests are configured in jest.config.js to automatically clear mocks between tests."
+  - Test Organization: Explain how tests are structured in the project. For example, "All tests reside in the tests/ directory and mirror the structure of the src/ directory for unit tests," or "Each module has a corresponding test file, e.g., tests for user_service.py are in tests/test_user_service.py." If there are integration tests or special test folders, mention those.
+  - Writing New Tests: Give guidance on creating new tests:
+  - Mention any base test classes or utilities provided by the project (maybe there's a tests/util.py with common setup code).
+  - Encourage writing tests for both typical cases and edge cases. For instance, "when adding a new feature, include tests for expected behavior and at least one for an edge case or error condition."
+  - Refer to an existing test as an example of style. E.g., "Follow the pattern of TestUserFlow in tests/test_user_flow.py for writing scenario-based tests."
+  - If the project expects certain coverage (check if there's a coverage report generation), mention that goal (like "aim for at least 90% code coverage on new code").
+  - Environment and Data for Testing: Detail how to set up the test environment:
+  - If the project requires a database for tests, explain how it's handled. E.g., "The tests use a SQLite in-memory database by default (see settings.test.py) so tests run quickly without affecting production data." Or "Before running tests, start the test database with docker-compose -f docker-compose.test.yml up -d."
+  - If special environment variables or config files are needed, list them (e.g., "Set NODE_ENV=test to use the test configuration", or "copy .env.example to .env.test and fill in dummy values for third-party API keys").
+  - Advise using mocks or stubs for external services. If the project uses something like VCR for HTTP calls or has mock classes, mention those as the preferred method to avoid hitting real external endpoints during tests.
+  - Debugging Test Failures: Provide tips for when a test fails:
+  - "Re-run tests with verbose output (pytest -vv or npm test -- --verbose) to get more detail on failures."
+  - "Use a debugger or insert print/log statements in both test and source code to trace the issue (for example, using pdb in Python or console.log in JS)."
+  - "Check recent changes to see if a code change might have caused the failure; version control history (git blame) on the failing section can provide context."
+  - If the project has a continuous integration (CI) system, note that "CI must pass all tests; use the same commands locally that CI uses to avoid discrepancies."
+  - Safety and Risk Mitigation in Testing: Very importantly, remind that tests should not have side effects on real data:
+  - If there are any scripts or test cases that could be destructive (e.g., a test that drops a database or modifies an external system), highlight to ensure they point to test instances. "For example, tests/test_delete_all_users.py should be run against a test database; verify the database URL in config/test.yaml is a localhost or in-memory database, not a production URL."
+  - Recommend backing up data or using transactions/rollbacks in tests if interacting with a database. E.g., "Django tests use an in-memory SQLite by default and wrap each test in a transaction that rolls back, so database is clean after each test."
+  - Caution the agent never to run destructive maintenance commands (like full database resets or data wipes) outside of a test environment.
+  - Other Testing-Related Practices: If applicable, mention performance tests, load tests, or security tests:
+  - For instance, "The performance/ folder contains scripts to measure throughput; use these after making performance-related changes to ensure no regressions."
+  - Or, "The project uses ESLint and style checks as part of testing; treat linter warnings as test failures that need fixing."
+40. The testing guidance memory should equip the agent to confidently handle testing tasks – from running existing tests to writing new ones, and doing so safely.
+41. Save this guidance to ./.{AGENT_NAME}/skills/memories/testing-guidance/SKILL.md.
+42. Additional Memory Modules (if needed):
+43. Assess Need for Extra Memories: After creating the core memories, determine if more detailed modules are warranted. This is especially useful for big projects or those with special domains:
+  - If the project is a monorepo or multi-package repo, consider making a memory file for each major package or service. For example, if there's frontend/ and backend/ subprojects, you could have frontend-overview and backend-overview memory skills focusing on each.
+  - If the project has a complex domain (e.g., a financial system, machine learning pipeline, compiler, etc.), create a memory to capture domain-specific knowledge. For instance, a financial-domain memory might list accounting rules or formulas implemented; an ML-model memory might summarize the machine learning model architecture and training process as found in the code.
+  - Identify major subsystems or components. For each, gather details similar to the project overview but scoped to that component. Example: "Database Schema memory – outlines key database tables and relationships (derived from migrations/ or ORM models)", or "API Endpoints memory – a list of main API endpoints and their purpose (from analyzing the controller/router files)".
+44. Spawn Additional Memories: For each identified area:
+  - Structure the content like a mini overview specific to that module/domain. Include important details, design decisions, and any conventions particular to it.
+  - Use pointers to the relevant files heavily here, since these memories should help navigate that part of the code. For example, in a database schema memory, list tables and point to model or migration files; in an API memory, list endpoints with pointers to their handler functions.
+  - Avoid overlap: if something is already covered in the general project overview, only expound on it in a separate memory if more depth is useful. Cross-reference where appropriate (e.g., the project overview might say "see database-schema memory for details on the database design").
+45. Caution on Quantity: Only create additional memories that provide real value. Too many memory files can overwhelm or dilute important info. Focus on distinct areas that would benefit from dedicated attention.
+46. If unsure whether an extra memory is needed or what to include, use $ask-user to confirm. For example: "$ask-user: The project contains a machine learning component. Would you like a detailed memory module about the ML model and training process?"
+47. Save any new memory files in the same memories directory (e.g., ./.{AGENT_NAME}/skills/memories/<topic>/SKILL.md with <topic> being the name of the component or domain).
+48. Wrap Up and Verify:
+49. Review Memory Content: Go through each generated memory file and verify the information is accurate and clearly presented. Ensure that all key insights from the codebase have been captured. The memories should collectively provide a well-rounded understanding of the project.
+50. Avoid Sensitive Details: Make sure no sensitive information (credentials, secret keys, personal data) from the repository is included in the memories. If during the scan any secrets were found (for example in config files), do not record them; if relevant, just note that such configuration exists and may require setup.
+51. Final Touches: Add any missing pieces by performing one last sweep: for example, double-check if there was a CONTRIBUTING.md or developer guide that we didn't incorporate; if found, extract any tips from it now. Ensure every $ask-user query that was needed has been addressed (if not, the onboarding might pause for user input at those points).
+52. Persistence: Confirm that all memory files are saved at ./.{AGENT_NAME}/skills/memories/ in their respective folders so that the activate-memories skill can load them next time. Each should be named SKILL.md inside its folder, containing the markdown content we compiled.
+53. Post-Onboarding Message: It's often useful to output a final message indicating completion. For example, the agent might output: "✅ Onboarding complete. Project memories created for: project-overview, suggested-commands, style-and-conventions, task-completion-checklist, testing-guidance." This confirms to the user (and logs) that the skill ran successfully.
+54. The agent is now fully equipped with a durable understanding of the project. Future queries or tasks on this project will leverage these memory modules for context, resulting in more informed and safer operations. The onboarding process helps prevent common errors and accelerates subsequent development by having this knowledge readily available.
