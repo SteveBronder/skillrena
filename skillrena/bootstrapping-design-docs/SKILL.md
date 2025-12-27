@@ -32,7 +32,7 @@ Create (idempotent; do not overwrite without preserving history):
 - `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/SKILL.md` - The generated `${DESIGN_DOC_SKILL_NAME}` skill.
 - `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/templates/README.md` - Lists available templates and when to use them.
 - `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/templates/base.md` - Meta "base" design doc template (guardrails + structure).
-- `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/templates/<variant>.md` - Project-specific templates (e.g., `skill.md`, `feature.md`).
+- `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/templates/<variant>.md` - Project-specific templates (e.g., `etl-pipeline.md`, `feature.md`).
 </file_list>
 
 **Note**: Templates are bundled with the skill (not in `design-docs/`) per Agent Skills progressive disclosure pattern.
@@ -203,7 +203,7 @@ Include verbatim in the design doc skill you create under "Engineering Guardrail
 
 <completion_criteria>
 - `design-docs/` exists with README + `active/` + `agents/` subdirectories
-- name of ${DESIGN_DOC_SKILL_NAME} confirmed with user. 
+- name of ${DESIGN_DOC_SKILL_NAME} confirmed with user.
 - `${DESIGN_DOC_SKILL_NAME}` skill exists at `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/`
 - Templates bundled at `.{AGENT_NAME}/skills/{DESIGN_DOC_SKILL_NAME}/templates/`
 - `base.md` includes guardrails and human-readable subtasks section format
