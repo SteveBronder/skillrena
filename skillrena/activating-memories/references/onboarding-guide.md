@@ -1,3 +1,5 @@
+# Onboarding
+
 This skill guides the agent through analyzing a new codebase and creating persistent "memory" skill files for future reference. It performs a comprehensive exploration of the project to build high-signal knowledge bases. The following core memory modules will be generated: project-overview, suggested-commands, style-and-conventions, task-completion-checklist, and testing-guidance. If the repository is large or complex, additional memory modules may be created to cover specific domains or components.
 Guidelines
 - Use Pointers, Not Quotes: When referencing the code or configuration, refer to file names, paths, or line numbers rather than copying large code excerpts. (For example, say "configuration is handled in config/app.yaml" instead of quoting the file's content.) This keeps memories concise and tied to source of truth.
