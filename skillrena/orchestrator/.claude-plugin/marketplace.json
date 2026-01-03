@@ -1,0 +1,13 @@
+{
+  "name": "stonks-local",
+  "owner": {
+    "name": "stonks"
+  },
+  "plugins": [
+    {
+      "name": "orchestrator",
+      "source": "./",
+      "description": "Multi-agent orchestrator for implementing design documents"
+    }
+  ]
+}

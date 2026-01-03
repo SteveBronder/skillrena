@@ -1,13 +1,17 @@
 #!/bin/bash
-# Copy Skillrena skills to agent directories
+# Copy Skillrena skills and plugins to agent directories
 
 SKILLS=(
   "activating-memories"
-  "writing-memories"
-  "recording-diary"
-  "switching-modes"
   "bootstrapping-design-docs"
+  "generate-modes"
   "generating-subtasks"
+  "recording-diary"
+  "writing-memories"
+)
+
+PLUGINS=(
+  "orchestrator"
 )
 
 # Codex: skills go in ~/.codex/skills/skillrena/
@@ -26,6 +30,17 @@ for skill in "${SKILLS[@]}"; do
   fi
 done
 
+# Claude Code: plugins go in ~/.claude/plugins/
+mkdir -p "$HOME/.claude/plugins"
+for plugin in "${PLUGINS[@]}"; do
+  if [ -d "skillrena/$plugin" ]; then
+    cp -r "skillrena/$plugin" "$HOME/.claude/plugins/" 2>/dev/null || true
+  fi
+done
+
 echo "Skills installed to:"
 echo "  - ~/.claude/skills/"
 echo "  - ~/.codex/skills/skillrena/"
+echo ""
+echo "Plugins installed to:"
+echo "  - ~/.claude/plugins/"

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Remove Skillrena skills from agent directories
+# Remove Skillrena skills and plugins from agent directories
 
 SKILLS=(
   "activating-memories"
@@ -8,6 +8,11 @@ SKILLS=(
   "switching-modes"
   "bootstrapping-design-docs"
   "generating-subtasks"
+  "generate-modes"
+)
+
+PLUGINS=(
+  "orchestrator"
 )
 
 for skill in "${SKILLS[@]}"; do
@@ -26,6 +31,15 @@ for skill in "${SKILLS[@]}"; do
   fi
 done
 
+# Remove plugins from Claude Code
+for plugin in "${PLUGINS[@]}"; do
+  target_dir="$HOME/.claude/plugins/$plugin"
+  if [ -d "$target_dir" ]; then
+    echo "Removing: $target_dir"
+    rm -rf -- "$target_dir"
+  fi
+done
+
 # Also remove old-style skills if present (for migration)
 for d in "$HOME/.codex/skills/skillrena/"*-skl "$HOME/.codex/skills/skillrena/"*-ski \
          "$HOME/.claude/skills/"*-skl "$HOME/.claude/skills/"*-ski; do
@@ -35,4 +49,4 @@ for d in "$HOME/.codex/skills/skillrena/"*-skl "$HOME/.codex/skills/skillrena/"*
   fi
 done
 
-echo "Skills removed."
+echo "Skills and plugins removed."
