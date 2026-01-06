@@ -186,6 +186,79 @@ Agents can parse markdown, but Anthropic has found that agents respond better to
 
 The agent will write a new `design-docs/agent/{DESIGN_NAME}.xml` file which future agents will use to complete the design.
 
+## Orchestrator Plugin
+
+The `skillrena/orchestrator` is a Claude Code plugin that takes design documents and orchestrates multi-agent teams to implement them. Think of it as a project manager that coordinates multiple specialized agents to build features in parallel.
+
+### What It Does
+
+Instead of having one agent try to implement an entire design doc, the orchestrator:
+
+1. **Reviews the design** - Spawns expert reviewers to validate the design before writing any code
+2. **Breaks it down** - Converts human-readable subtasks into machine-readable XML
+3. **Coordinates builders** - Creates isolated git worktrees and spawns agents to implement each subtask in parallel
+4. **Enforces quality gates** - Each subtask gets reviewed by multiple experts; must score >= 0.96 to pass
+5. **Creates PRs** - Automatically opens pull requests when work passes all reviews
+
+### Installation
+
+The orchestrator is a Claude Code plugin located in `skillrena/orchestrator/`. To use it, you need to install it as a plugin (not a skill).
+
+### Two-Stage Workflow
+
+The orchestrator splits work into two phases for better context management:
+
+#### 1. Design Review Phase
+
+```bash
+/orchestrator:design design-docs/active/my-feature/
+```
+
+This phase:
+- Spawns 3 reviewers: design-doc-reviewer, cpp-performance-expert, hft-system-architect
+- Iterates until all reviewers score >= 0.96
+- Asks clarifying questions through human-in-the-loop prompts
+- Generates XML subtasks and execution plan after approval
+
+#### 2. Implementation Phase
+
+```bash
+/orchestrator:build design-docs/active/my-feature/
+```
+
+This phase:
+- Creates git worktrees for each subtask (max 2 concurrent)
+- Spawns builder agents in isolated environments
+- Spawns reviewers for each implementation
+- Automatically fixes issues or escalates to humans
+- Creates PRs when quality gates are met
+
+### Why Use It?
+
+**For complex features**: When you need multiple files changed across the codebase, the orchestrator ensures:
+- Work happens in parallel where possible
+- Each piece gets dedicated attention from specialized agents
+- Quality is enforced before merging
+- Human oversight at critical checkpoints
+
+**Token efficiency**: By splitting work across agents in isolated contexts, you avoid burning tokens on loading the entire codebase repeatedly.
+
+### Commands
+
+| Command | What It Does |
+|---------|--------------|
+| `/orchestrator:design <path>` | Review and approve a design document |
+| `/orchestrator:build <path>` | Implement approved design with multi-agent coordination |
+| `/orchestrator:help` | Get detailed help and workflow info |
+| `/orchestrator:cancel` | Stop an active orchestration loop |
+
+### Requirements
+
+- Claude Code
+- Git with worktree support
+- GitHub CLI (`gh`) for PR creation
+
+For more details, see `skillrena/orchestrator/README.md`.
 
 ## Problems?
 
