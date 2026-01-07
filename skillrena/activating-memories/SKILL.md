@@ -11,6 +11,7 @@ description: Loads project-specific memories at session start and triggers onboa
      - `suggested-commands/SKILL.md`
      - `style-and-conventions/SKILL.md`
      - `task-completion-checklist/SKILL.md`
+     - `testing-guidance/SKILL.md`
 2) If empty or missing, read `references/onboarding-guide.md` and execute onboarding.
 3) Otherwise, read memories and proceed.
 4) If you learn new info, update the relevant `<name>/SKILL.md` via `$writing-memories`.
