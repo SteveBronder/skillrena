@@ -4,7 +4,9 @@ description: Records session learnings and decisions before context compaction. 
 ---
 
 <quick_start>
-- Before compaction or session end, write `diary_{YYYY-MM-DD_HH-MM}.md` to `./.{AGENT_NAME}/skills/memories/` via `$writing-memories`.
+- Before compaction or session end, write `diary_{YYYY-MM-DD_HH-MM}.md` to `./agent-docs/diary/`.
+- Create the directory if needed.
+- If you capture something durable (commands, conventions, reusable helpers), also record it via `$write-memory` into the core `agent-docs` files.
 </quick_start>
 
 <templates>
@@ -25,7 +27,7 @@ Open questions:
 </templates>
 
 <consolidation>
-If more than 5 diary entries exist, merge them into `diary-consolidated.md`, keeping only high-signal items. Delete the older entries after consolidation.
+If more than 5 diary entries exist under `agent-docs/diary/`, merge them into `diary-consolidated.md`, keeping only high-signal items. Delete the older entries after consolidation.
 </consolidation>
 
 <decision_points>
@@ -35,5 +37,5 @@ If more than 5 diary entries exist, merge them into `diary-consolidated.md`, kee
 
 <failure_modes>
 - Time format unclear: use local time or `date` output.
-- Memory dir missing: create it before writing.
+- Diary dir missing: create it before writing.
 </failure_modes>

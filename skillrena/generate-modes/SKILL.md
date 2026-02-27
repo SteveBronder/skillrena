@@ -27,11 +27,14 @@ For concrete “golden” examples of what the generated mode `SKILL.md` files s
 
 1. **Activate memories**
    - Run `$activating-memories`.
-   - Ensure baseline memory skills exist under `./.{AGENT_NAME}/skills/memories/`
-   - If memories are missing or stale, update them before generating modes.
+   - Ensure repo-local docs exist under `./agent-docs/`.
+   - Load only the relevant anti-patterns via:
+     - `$memories We will be working in <languages>`
+   - If you are warned that `<lang>/*.md` exceeds 500 lines, run:
+     - `$compress-memories <languages>`
 
 2. **Choose a project slug**
-   - Prefer a slug stated in `project_overview`.
+   - Prefer a slug stated in `agent-docs/<lang>/project-overview.md`.
    - Otherwise derive from the repository folder name.
    - Slug rules: lowercase, digits, hyphens; no leading/trailing hyphen; no consecutive hyphens.
    - **Length rule (spec compliance):** generated skill `name` must be ≤ 64 chars and match its directory name.
@@ -47,8 +50,8 @@ For concrete “golden” examples of what the generated mode `SKILL.md` files s
    For each template:
    - Adapt it to the project by adding:
      - the `{slug}` mode name
-     - links to relevant memories (do not paste memory contents)
-     - project-specific verification commands (link to `suggested_commands-skl` for the canonical list)
+     - links to relevant `agent-docs` (do not paste contents)
+     - project-specific verification commands (link to `agent-docs/<lang>/suggested-commands.md` for the canonical list)
    - Write the resulting skill to:
      - `./.{AGENT_NAME}/skills/{slug}-mode-planner/SKILL.md`
      - `./.{AGENT_NAME}/skills/{slug}-mode-debugger/SKILL.md`
@@ -95,7 +98,7 @@ Include these sections (in any order):
 * **Operating loop** (the step-by-step behavior)
 * **Question protocol** (how to ask questions; allow questions in all modes)
 * **Output discipline** (acceptance criteria + local verification; test-change guardrail)
-* **Project context pointers** (links to memories)
+* **Project context pointers** (links to `agent-docs`)
 
 Keep the body concise. If the mode needs lengthy reference material, create `references/` files and link them.
 
@@ -103,13 +106,13 @@ Keep the body concise. If the mode needs lengthy reference material, create `ref
 
 When adapting templates:
 
-* Prefer links to memories, e.g. `../memories/project_overview-skl/SKILL.md`, not copy/paste.
+* Prefer links to `agent-docs/<lang>/*.md`, not copy/paste.
 * Use the project’s terminology: module names, CLI names, test runner names, etc.
 * Avoid generic fluff. Encode actionable guardrails, checks, and concrete steps.
-* Ensure the mode is usable standalone by a future agent who has access to the memories.
+* Ensure the mode is usable standalone by a future agent who has access to `agent-docs`.
 
 ## Failure modes and how to handle them
 
 * **Unknown `{AGENT_NAME}`**: infer from the local agent folder present (e.g. `.claude`, `.codex`). If none exist, ask the user what agent folder to use.
 * **Mode name collisions**: if a target directory already exists, do not overwrite silently. Either append a suffix (e.g. `-v2`) or ask the user which to keep.
-* **No reliable test commands**: link to `suggested_commands-skl` and ask the user to confirm the correct test command(s) if missing.
+* **No reliable test commands**: link to `agent-docs/<lang>/suggested-commands.md` and ask the user to confirm the correct test command(s) if missing.

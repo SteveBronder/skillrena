@@ -1,5 +1,0 @@
-{
-  "name": "orchestrator",
-  "version": "0.3.0",
-  "description": "Multi-agent orchestrator for implementing design documents. Features two separate commands (/orchestrator:design for review loop, /orchestrator:build for implementation), coordinates parallel sub-agents on Git worktrees, enforces quality gates with 0-1 scoring, supports human-in-the-loop questions via AskUserQuestion, and creates PRs when all reviewers score >= 0.96."
-}

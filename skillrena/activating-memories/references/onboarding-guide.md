@@ -1,153 +1,174 @@
-# Onboarding
+# Onboarding (agent-docs)
 
-This guide helps an agent analyze a new codebase and create repo-local "memory" skills under `./.{AGENT_NAME}/skills/memories/` for future sessions.
+This guide helps an agent analyze a new repository and create **repo-local memory documents** under `./agent-docs/`.
 
-## Core memories created
+These docs are intentionally modular so the agent only reads what it needs (anti-patterns first; other docs on demand).
 
-Each memory is written to `./.{AGENT_NAME}/skills/memories/<name>/SKILL.md`:
+## What gets created
 
-- `project-overview`
-- `suggested-commands`
-- `style-and-conventions`
-- `task-completion-checklist`
-- `testing-guidance`
+### 1) Repo-root init/router files (thin)
 
-If the repository is large or complex, create additional (optional) memories for distinct components/domains.
+Create these at repo root if missing:
+- `CLAUDE.md`
+- `AGENTS.md`
+- `GEMINI.md`
 
-## Guidelines (apply to all memories)
+Templates live in:
+- `assets/router-CLAUDE.md`
+- `assets/router-AGENTS.md`
+- `assets/router-GEMINI.md`
 
-- Use pointers, not quotes: prefer file names/paths/line numbers over large excerpts.
-- Ask for missing info: if key details aren't in-repo, use `$ask-user` instead of guessing.
-- High signal, low noise: include concrete, repo-specific facts (important modules, key scripts, config entry points).
-- Avoid destructive actions: onboarding should only read files; flag any destructive scripts/commands you find.
-- Avoid secrets: never copy credentials/keys into memories; just note where configuration lives.
+### 2) Repo-local memory docs
 
-## Step 1: Preliminary repository scan (shared)
+Per-language folder (created for each language in use):
+- `agent-docs/<lang>/project-overview.md`
+- `agent-docs/<lang>/suggested-commands.md`
+- `agent-docs/<lang>/style-and-conventions.md`
+- `agent-docs/<lang>/testing-guidance.md`
+- `agent-docs/<lang>/anti-patterns.md`
 
-- Read top-level docs and entry points (`README*`, `docs/`, install guides, `Makefile`, etc.).
-- Identify configuration and environment requirements (`.env*`, YAML/JSON configs, `settings.*`, etc.).
-- Determine languages/frameworks from build files (e.g., `pyproject.toml`, `package.json`, `pom.xml`, `go.mod`) and locate primary entry points (CLI main, server entry, Dockerfile `ENTRYPOINT`, etc.).
-- Map the high-level structure (major directories like `src/`, `tests/`, `docs/`, `scripts/`).
-- Gauge complexity (monorepo/multi-service) and decide whether extra memories are warranted.
-  - Examples:
-    - A monorepo with multiple services may benefit from separate memories for each service.
-    - A complex application with distinct modules may require individual memories for each module's context.
-    - A project with that works over databases may need a specific `database-overview` or `database-utils` memory.
-    - Projects with multiple languages may need specific `project-overview`, `suggested-commands`, `style-and-conventions`, and `testing-guidance`
-      - For example, If a package has `C++` and `python` you should create the following files
-        - `project-overview`,
-        - `cpp-project-overview`
-        - `cpp-suggested-commands`
-        - `cpp-style-and-conventions`
-        - `cpp-testing-guidance`
-        - `python-project-overview`
-        - `python-suggested-commands`
-        - `python-style-and-conventions`
-        - `python-testing-guidance`
-- If purpose/how-to-run is unclear, stop and ask: `$ask-user: What is the main purpose of this project and how do you run it locally?`
+Defaults we always support:
+- `cpp`, `python`, `go`, `js`, `ts`, `rust`, `r`
 
-## Memory: `project-overview`
+If the user names another language, web-search best practices for that language (error handling, typing, test tooling, formatting) and create the same 5 core files.
 
-Goal: give a newcomer (or future agent) a durable, high-level understanding of what the project is and how it's organized.
+Templates live in:
+- `assets/agent-docs-templates/`
 
-Include:
+### 3) Project-local skills (written into the repo)
 
-- **Project purpose & domain**: what it does (paraphrase README).
-- **Architecture & key components**: major modules/layers and how they interact; point to key directories/files.
-- **Tech stack & dependencies**: major frameworks/libraries and notable versions (when discoverable).
-- **Notable patterns/decisions**: e.g. repo pattern, retry wrappers, plugin system; point to where it's implemented.
-- **Golden paths** (use repo-specific examples):
-  - Adding a feature (what files typically change, where to add new code)
-  - Fixing a bug/failing test (where tests live, how to trace failures, when to add a new test)
-  - Performance work (hot spots, profiling/benchmarks if present)
-  - CLI extension (if applicable) or another common repo workflow
-- **Failure awareness**: fragile areas, external integrations, concurrency/complex logic, "DO NOT run in prod" sections, destructive scripts.
+Create these under `./.{AGENT_NAME}/skills/`:
+- `./.{AGENT_NAME}/skills/memories/SKILL.md`
+- `./.{AGENT_NAME}/skills/compress-memories/SKILL.md`
+- `./.{AGENT_NAME}/skills/write-memory/SKILL.md`
 
-Save to `./.{AGENT_NAME}/skills/memories/project-overview/SKILL.md`.
+Templates live in:
+- `assets/skills/memories-template.md`
+- `assets/skills/compress-memories-template.md`
+- `assets/skills/write-memory-template.md`
 
-## Memory: `suggested-commands`
+## Global rules
 
-Goal: provide a quick reference for setup/dev/test/build/deploy commands.
+- **References, not excerpts**: store file paths, command lines, config file names, and tiny summaries. Do not paste large blocks of code into `agent-docs`.
+- **TDD-first**: prefer red → green → refactor. Tests are the default verification gate.
+- **Assume failing tests are your fault** until proven otherwise.
+- **Fail fast**: do not suppress errors or add silent fallback code.
+- **Reuse-first**: before adding helpers, search for existing utilities (`utils/`, `common/`, `shared/`, `lib/`, `internal/`, `include/`, `pkg/`, `tools/`). Record where reusable utilities live.
+- **No destructive actions during onboarding**: onboarding should only read files.
+- **No secrets**: never copy credentials/keys into docs.
 
-Include:
+## Step 0: Resolve `{AGENT_NAME}`
 
-- **Setup & dev**: install deps, bootstrap steps (db init/migrate/seed), start dev server, required env vars.
-- **Testing**: unit/integration/e2e commands; lint/format; typecheck/static analysis; other QA tools.
-- **Build & deploy**: build/package commands, docker build/run, release/deploy scripts, migration commands (with safety notes).
-- **Utilities**: docs generation, dev shells, cache clearing, cleanup scripts.
+Pick the agent config dir for this repo:
+- `.claude/`, `.codex/`, `.cursor/`, `.copilot/`, `.aider/`
 
-For each command, add a brief "what it does" description. Source commands from `README*`, `Makefile`, `package.json` scripts, CI config, and `scripts/`.
+If multiple exist, prefer the current agent. If none exist, create one.
 
-If an expected command is missing/unclear, ask: `$ask-user: I didn't find a test/build command. How do you run it here?`
+## Legacy migration (from memory-skill folders)
 
-Save to `./.{AGENT_NAME}/skills/memories/suggested-commands/SKILL.md`.
+If the repo already has the old-style memory skill folders under `./{AGENT_NAME}/skills/memories/` (e.g. `project-overview/SKILL.md`), migrate them:
 
-## Memory: `style-and-conventions`
+1) Read the legacy SKILL.md files and extract only durable facts (paths, commands, conventions, pitfalls).
+2) Merge the content into the new `agent-docs` core files for the appropriate language(s).
+3) Delete the legacy memory-skill folders after successful migration (git history is the archive).
 
-Goal: help future changes match existing project style.
+Then proceed with the steps below.
 
-Include:
+## Step 1: Confirm the language(s)
 
-- Formatting tools and configs (e.g. Prettier/ESLint, Black/Flake8, gofmt, rustfmt).
-- Naming conventions (classes/functions/files/constants).
-- Project structure conventions (where new code should go; file suffixes/patterns).
-- Commenting/doc conventions (docstrings/JSDoc/Sphinx/etc.).
-- Git/workflow conventions (branching/commit style) if explicitly documented.
-- Testing conventions (naming/layout) from a style perspective.
-- Framework-specific conventions (Django/Rails/etc.) if relevant.
+If the user hasn’t already said, ask:
+- `$ask-user: Which languages are we working in for this repository (e.g., 'C++ and Python', 'Go + TypeScript')?`
 
-Prefer pointers to examples (e.g. "see `CONTRIBUTING.md` for commit rules", "pattern matches files X/Y"). If you're unsure, note uncertainty or ask `$ask-user`.
+Parse the user response into one or more language folders:
+- `C++` → `cpp`
+- `Python` → `python`
+- `Go` → `go`
+- `JavaScript` → `js`
+- `TypeScript` → `ts`
+- `Rust` → `rust`
+- `R` → `r`
 
-Save to `./.{AGENT_NAME}/skills/memories/style-and-conventions/SKILL.md`.
+If the language is unfamiliar, web-search best practices and seed the 5 core files anyway.
 
-## Memory: `task-completion-checklist`
+## Step 2: Create repo-root router files
 
-Goal: a project-tailored "done" checklist for features/bugfixes.
+If missing, create:
+- `AGENTS.md` from `assets/router-AGENTS.md`
+- `CLAUDE.md` from `assets/router-CLAUDE.md`
+- `GEMINI.md` from `assets/router-GEMINI.md`
 
-Start with a checklist like:
+Keep them short.
 
-- Testing: run existing tests; add/update tests for changes.
-- Code quality: run linters/formatters/typecheck.
-- Docs: update `README`/docs/docstrings/CHANGELOG as needed.
-- Versioning/release: bump version/changelog if applicable.
-- Review: self-review for correctness/security/perf/maintainability.
-- Deploy/ops: migrations, env var changes, cache clears, etc.
-- Backup/rollback: plan for risky changes (feature flag, rollback steps).
+## Step 3: Create `agent-docs/` structure
 
-Make items imperative (and consider `- [ ]` checkboxes). Tailor to the repo (e.g., CI requirements).
+Create:
+- `agent-docs/<lang>/` for each selected language
 
-Save to `./.{AGENT_NAME}/skills/memories/task-completion-checklist/SKILL.md`.
+Seed `agent-docs/<lang>/anti-patterns.md` from:
+- `assets/agent-docs-templates/anti-patterns/general.md`
 
-## Memory: `testing-guidance`
+For each language folder, create the 5 core docs:
+- `project-overview.md` from `assets/agent-docs-templates/project-overview.md`
+- `suggested-commands.md` from `assets/agent-docs-templates/suggested-commands.md`
+- `style-and-conventions.md` from `assets/agent-docs-templates/style-and-conventions.md`
+- `testing-guidance.md` from `assets/agent-docs-templates/testing-guidance.md`
+- `anti-patterns.md` from the matching language template in `assets/agent-docs-templates/anti-patterns/`
 
-Goal: teach future agents how to run/write tests safely in this repo.
+Idempotency:
+- If a target file already exists, update/merge rather than overwriting.
 
-Include:
+## Step 4: Create project-local skills
 
-- How to run tests (exact commands; tiers like unit/integration/e2e).
-- Testing framework/tools and where config lives (`pytest.ini`, `jest.config.js`, custom runners, etc.).
-- Test organization (folders/layout) and example tests to follow.
-- Writing new tests: shared fixtures/utilities, edge cases, coverage expectations if present.
-- Test environment/data: DB/docker-compose/test env vars, mocks/stubs preferred for external services.
-- Debugging failures: verbose reruns, debugging tips, checking history (`git blame`), matching CI locally.
-- Safety: ensure tests don't touch production data or real external systems; call out destructive scripts/tests if present.
-- Optional: perf/load/security testing practices if the repo has them.
+Create directories:
+- `./.{AGENT_NAME}/skills/memories/`
+- `./.{AGENT_NAME}/skills/compress-memories/`
+- `./.{AGENT_NAME}/skills/write-memory/`
 
-Save to `./.{AGENT_NAME}/skills/memories/testing-guidance/SKILL.md`.
+Copy the templates into place as `SKILL.md`.
 
-## Optional: additional memories
+Idempotency:
+- If a `SKILL.md` already exists, do not overwrite silently.
 
-If the repo has distinct subsystems (monorepo services, complex domains), add extra memories (e.g. `frontend-overview`, `database-schema`, `api-endpoints`) when they add real navigation value.
+## Step 5: Repo scan (read-only) to fill docs
 
-- Avoid overlap with `project-overview`; cross-reference instead.
-- Keep the count small; ask if you're unsure: `$ask-user: Would you like a dedicated memory for <topic>?`
+Scan, in this order:
+1) Top-level docs: `README*`, `docs/`, `CONTRIBUTING*`, `design/`, `Makefile`, `justfile`.
+2) Build + dependency files:
+   - C++: `CMakeLists.txt`, `meson.build`, `conanfile.*`, `vcpkg.json`
+   - Python: `pyproject.toml`, `requirements*.txt`, `tox.ini`, `noxfile.py`
+   - Go: `go.mod`
+   - JS/TS: `package.json`, `tsconfig.json`, lockfiles
+   - Rust: `Cargo.toml`
+   - R: `DESCRIPTION`, `renv.lock`
+3) CI config: `.github/workflows/`, etc. (best source of canonical commands)
+4) Tests layout + runners: `tests/`, `test/`, `spec/` and framework configs
+5) Utility folders: `utils/`, `common/`, `shared/`, `lib/`, `internal/`, `include/`, `pkg/`, `tools/`
 
-Save to `./.{AGENT_NAME}/skills/memories/<topic>/SKILL.md`.
+If the purpose or how to run tests locally is unclear:
+- `$ask-user: What is the main purpose of this project and how do you run tests locally?`
 
-## Wrap up
+## Step 6: Populate the 5 core docs per language
 
-- Review each memory for accuracy and clarity; ensure all promised details are included.
-- Re-check for sensitive information (don't include secrets).
-- Do a final sweep for docs you missed (`CONTRIBUTING.md`, developer guides, etc.).
-- Confirm all files exist under `./.{AGENT_NAME}/skills/memories/<name>/SKILL.md`.
-- Output a short completion message listing created memories.
+Minimum requirements:
+- `suggested-commands.md` MUST include:
+  - how to run *all tests*
+  - how to run a *single test fast* (tight TDD loop)
+  - lint/format/typecheck commands (when applicable)
+- `testing-guidance.md` MUST include:
+  - test framework + where config lives
+  - how to reproduce CI failures locally
+  - safety notes (avoid touching prod/external systems)
+- `style-and-conventions.md` MUST include:
+  - formatting/lint/typecheck tools
+  - naming conventions
+  - **utility reuse map**: where to find existing helpers (with concrete paths)
+- `anti-patterns.md` MUST be tailored:
+  - C++: note allowed C++ standard (e.g. C++23) and enforce repo-specific constraints
+  - Python: emphasize strict typing workflow (pyright/pylance)
+
+## Step 7: Wrap up
+
+- Run `$memories <language list>` to load only anti-patterns.
+- If `agent-docs/<lang>/*.md` exceeds 500 lines, tell the user to run:
+  - `$compress-memories <language list>`
+- After heavy onboarding or compression, recommend starting a new session.
