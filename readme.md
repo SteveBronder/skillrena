@@ -6,7 +6,7 @@ Like [Serena](https://github.com/codegate-ai/serena), but way fewer tokens. It m
 
 ## Why Though?
 
-Serena is great - it gives agents deep project understanding through MCP servers. But that understanding costs tokens. A lot of tokens.
+Serena is great - it gives agents deep project understanding through MCP servers. But that understanding costs a lot of tokens.
 
 | Approach | Token Cost | Setup |
 |----------|------------|-------|
@@ -15,7 +15,7 @@ Serena is great - it gives agents deep project understanding through MCP servers
 
 That's it. Running `$activating-memories` to load your project memories adds about ~7.6k tokens in total. Still leaves plenty of room for actual work.
 
-While serana also comes with a language server, agent cli's like claude now come with their own language servers, so that means we can focus on just keeping track of memories surrounding the projects goals.
+While serena also comes with a language server, agent cli's like claude now come with their own language servers, so that means we can focus on just keeping track of memories surrounding the projects goals.
 ### The Numbers
 
 Using claude's `/context` command we can get an idea of how many tokens these skils all require when each is read in full.
